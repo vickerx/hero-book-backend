@@ -1,0 +1,65 @@
+plugins {
+    id 'org.springframework.boot' version "${springBootPluginVersion}" apply false
+    id 'io.spring.dependency-management' version "${springDependencyManagementPluginVersion}"
+}
+
+group = 'com.thoughtworks.hero-book'
+version = '0.0.1-SNAPSHOT'
+
+subprojects {
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
+    apply plugin: 'java'
+    sourceCompatibility = javaVersion
+    apply plugin: 'jacoco'
+    apply plugin: 'checkstyle'
+
+    jacoco {
+        toolVersion = "${jacocoVersion}"
+        reportsDir = file("$buildDir/reports/jacoco")
+    }
+
+    jacocoTestReport {
+        reports {
+            xml.enabled false
+            csv.enabled false
+            html.destination file("${buildDir}/reports/jacoco/test/html")
+        }
+
+        dependsOn test
+    }
+
+    test {
+        useJUnitPlatform()
+        finalizedBy jacocoTestReport
+    }
+
+    checkstyle {
+        toolVersion ="${checkstyleVersion}"
+        configFile = file("${rootDir}/config/checkstyle/checkstyle.xml")
+    }
+
+    checkstyleMain {
+        source ='src/main/java'
+    }
+
+    checkstyleTest {
+        source ='src/test/java'
+    }
+
+    dependencyManagement {
+        dependencies {
+            dependency "org.mapstruct:mapstruct:${mapStructVersion}"
+            dependency "org.mapstruct:mapstruct-processor:${mapStructVersion}"
+        }
+        imports {
+            mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+        }
+    }
+}
+
+allprojects {
+    repositories {
+        mavenCentral()
+    }
+}

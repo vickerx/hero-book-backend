@@ -1,0 +1,35 @@
+group 'com.thoughtworks.hero-book'
+version '0.0.1-SNAPSHOT'
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+jacocoTestReport {
+    afterEvaluate {
+        classDirectories.from = (classDirectories.files.collect {
+            fileTree(dir: it, exclude: [
+                    'com/thoughtworks/herobook/entity/**',
+                    'com/thoughtworks/herobook/dto/**',
+                    'com/thoughtworks/herobook/mapper/**'
+            ])
+        })
+    }
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    compileOnly 'org.projectlombok:lombok'
+    runtimeOnly 'mysql:mysql-connector-java'
+    annotationProcessor 'org.projectlombok:lombok'
+    implementation 'org.flywaydb:flyway-core'
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+    }
+    implementation 'org.mapstruct:mapstruct'
+    annotationProcessor 'org.mapstruct:mapstruct-processor'
+    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+}

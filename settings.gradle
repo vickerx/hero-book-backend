@@ -1,0 +1,6 @@
+rootProject.name = 'hero-book'
+include 'hero-book-gateway'
+include 'hero-book-auth'
+include 'hero-book-core'
+include 'hero-book-registry'
+
