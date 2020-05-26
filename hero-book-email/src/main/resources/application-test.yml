@@ -1,0 +1,14 @@
+spring:
+  mail:
+    protocol: smtp
+    host: smtp.qq.com
+    port: 587
+    username: 773411997@qq.com
+    password:
+    properties:
+      mail.debug: true
+      mail.smtp.timeout: 5000
+  freemarker:
+    prefix: /templates/
+    suffix: .ftl
+

@@ -1,0 +1,30 @@
+group 'com.thoughtworks.hero-book'
+version '0.0.1-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+jacocoTestReport {
+    afterEvaluate {
+        classDirectories.from = (classDirectories.files.collect {
+            fileTree(dir: it, exclude: [
+                    'com/thoughtworks/herobook/email/enums/**',
+                    'com/thoughtworks/herobook/email/vo/**',
+                    'com/thoughtworks/herobook/email/utils/**'
+            ])
+        })
+    }
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+    }
+    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
+    implementation 'org.springframework.boot:spring-boot-starter-freemarker'
+}
