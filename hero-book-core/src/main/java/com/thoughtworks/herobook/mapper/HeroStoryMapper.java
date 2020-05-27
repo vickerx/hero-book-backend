@@ -10,11 +10,12 @@ import org.mapstruct.factory.Mappers;
 public abstract class HeroStoryMapper {
     public static HeroStoryMapper HERO_STORY_MAPPER = Mappers.getMapper(HeroStoryMapper.class);
 
-    @Mapping(target = "contentAbstract", expression = "java(calculateContentAbstract(heroStory.getContent()))")
+    @Mapping(target = "contentAbstract", expression = "java(calculateContentAbstract(heroStory))")
     public abstract HeroStoryDTO toDTO(HeroStory heroStory);
 
-    String calculateContentAbstract(String content) {
+    String calculateContentAbstract(HeroStory heroStory) {
         final int maxSize = 300;
-        return content.length() > maxSize ? content.substring(0, maxSize) : content;
+        return heroStory.getContent().length() > maxSize
+                ? heroStory.getContent().substring(0, maxSize) : heroStory.getContent();
     }
 }
