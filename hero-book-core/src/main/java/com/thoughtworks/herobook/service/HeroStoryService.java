@@ -15,7 +15,7 @@ public class HeroStoryService {
     private final HeroStoryRepository heroStoryRepository;
 
     public Page<HeroStoryDTO> getHeroStoriesByPage(Pageable pageable) {
-        return heroStoryRepository.findAllOrderByUpdatedTimeDesc(pageable)
+        return heroStoryRepository.findAllByOrderByUpdatedTimeDesc(pageable)
                 .map(HeroStoryMapper.HERO_STORY_MAPPER::toDTO);
     }
 }

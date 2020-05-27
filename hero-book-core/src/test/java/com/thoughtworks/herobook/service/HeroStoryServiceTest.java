@@ -29,7 +29,7 @@ public class HeroStoryServiceTest {
     @Test
     void should_get_hero_story_pageable() {
         Page<HeroStory> page = new PageImpl<>(HeroStoryMockData.mockList());
-        when(heroStoryRepository.findAllOrderByUpdatedTimeDesc(any())).thenReturn(page);
+        when(heroStoryRepository.findAllByOrderByUpdatedTimeDesc(any())).thenReturn(page);
 
         Page<HeroStoryDTO> response = heroStoryService.getHeroStoriesByPage(PageRequest.of(1, 5));
 
