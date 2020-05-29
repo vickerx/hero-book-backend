@@ -8,6 +8,9 @@ spring:
   jpa:
     hibernate:
       ddl-auto: validate
+  flyway:
+    table: core_flyway_schema_history
+    baseline-on-migrate: true
 eureka:
   client:
     service-url:
