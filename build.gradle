@@ -6,6 +6,9 @@ plugins {
 group = 'com.thoughtworks.hero-book'
 version = '0.0.1-SNAPSHOT'
 
+"cp config/git-hooks/pre-push .git/hooks/pre-push".execute()
+"chmod 744 .git/hooks/pre-push".execute()
+
 subprojects {
     apply plugin: 'org.springframework.boot'
     apply plugin: 'io.spring.dependency-management'
