@@ -5,6 +5,7 @@ import com.thoughtworks.herobook.gateway.clients.UserApiClient;
 import com.thoughtworks.herobook.gateway.clients.dto.UserDto;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -17,7 +18,13 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        if (StringUtils.isEmpty(username)) {
+            throw new UsernameNotFoundException("username cannot be empty.");
+        }
         UserDto userDto = userApiClient.getUserByUsername(username);
+        if (userDto == null) {
+            throw new UsernameNotFoundException("username not found.");
+        }
         return User.withUsername(username).password(userDto.getPassword())
                 .authorities(Lists.newArrayList()).build();
     }

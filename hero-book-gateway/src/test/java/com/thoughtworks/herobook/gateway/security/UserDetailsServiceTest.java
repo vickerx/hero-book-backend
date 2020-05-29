@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 public class UserDetailsServiceTest {
 
@@ -27,5 +28,21 @@ public class UserDetailsServiceTest {
 
     }
 
+    @Test
+    void should_throw_username_not_found_exception_when_load_user_by_username_given_non_user() {
+        //given 1
+        var username = "";
+        var userApiClient = Mockito.mock(UserApiClient.class);
+        var userDetailsService = new UserDetailsServiceImpl(userApiClient);
+
+        Assertions.assertThrows(UsernameNotFoundException.class, () -> userDetailsService.loadUserByUsername(username));
+
+        //given 2
+        var username2 = "username";
+        Mockito.when(userApiClient.getUserByUsername(username)).thenReturn(null);
+
+        Assertions.assertThrows(UsernameNotFoundException.class, () -> userDetailsService.loadUserByUsername(username2));
+
+    }
 
 }
