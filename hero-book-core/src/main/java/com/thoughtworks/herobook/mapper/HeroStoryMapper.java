@@ -1,6 +1,7 @@
 package com.thoughtworks.herobook.mapper;
 
 import com.thoughtworks.herobook.dto.HeroStoryDTO;
+import com.thoughtworks.herobook.dto.HeroStoryDetailDTO;
 import com.thoughtworks.herobook.entity.HeroStory;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -13,9 +14,12 @@ public abstract class HeroStoryMapper {
     @Mapping(target = "contentAbstract", expression = "java(calculateContentAbstract(heroStory))")
     public abstract HeroStoryDTO toDTO(HeroStory heroStory);
 
+    public abstract HeroStoryDetailDTO toDetailDTO(HeroStory heroStory);
+
     String calculateContentAbstract(HeroStory heroStory) {
-        final int maxSize = 300;
+        final int maxSize = 297;
         return heroStory.getContent().length() > maxSize
-                ? heroStory.getContent().substring(0, maxSize) : heroStory.getContent();
+                ? String.format("%s...", heroStory.getContent().substring(0, maxSize))
+                : heroStory.getContent();
     }
 }

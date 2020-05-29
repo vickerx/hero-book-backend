@@ -27,12 +27,20 @@ public class HeroStoryControllerTest extends BaseControllerTest {
     }
 
     @Test
+    void should_get_hero_story_by_id() throws Exception {
+        mockMvc.perform(get("/api/hero-story/1")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
     void should_get_hero_story_pageable() throws Exception {
         mockMvc.perform(get("/api/hero-story")
                 .contentType(MediaType.APPLICATION_JSON)
-                .param("page", "0")
+                .param("page", "7")
                 .param("size", "5"))
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("$.number", is(7)))
                 .andExpect(jsonPath("$.totalPages", is(4)))
                 .andExpect(jsonPath("$.totalElements", is(18)));
     }
