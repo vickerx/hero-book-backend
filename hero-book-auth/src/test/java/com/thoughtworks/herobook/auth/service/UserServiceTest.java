@@ -4,6 +4,7 @@ import com.thoughtworks.herobook.auth.dto.UserDTO;
 import com.thoughtworks.herobook.auth.entity.User;
 import com.thoughtworks.herobook.auth.exception.EmailNotUniqueException;
 import com.thoughtworks.herobook.auth.repository.UserRepository;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -56,4 +57,23 @@ public class UserServiceTest {
         assertEquals(DigestUtils.md5DigestAsHex(password.getBytes()), captorValue.getPassword());
         assertEquals(email, captorValue.getEmail());
     }
+
+    @Test
+    void should_return_user_when_get_by_email_given_exist_email() {
+        var email = "123@163.com";
+        var user = User.builder().email(email)
+                .username("Jack")
+                .id(1L)
+                .isActivated(true)
+                .password("password")
+                .build();
+
+        when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
+
+        var actualUser = userService.getByEmail(email);
+
+        Assertions.assertNotNull(actualUser);
+        Assertions.assertEquals(user, actualUser);
+    }
+
 }

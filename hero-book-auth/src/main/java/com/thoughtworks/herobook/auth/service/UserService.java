@@ -23,4 +23,8 @@ public class UserService {
                 .email(userDTO.getEmail()).build();
         userRepository.save(user);
     }
+
+    public User getByEmail(String email) {
+        return userRepository.findByEmail(email).get();
+    }
 }
