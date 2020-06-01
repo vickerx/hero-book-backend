@@ -3,6 +3,7 @@ package com.thoughtworks.herobook.auth.service;
 import com.thoughtworks.herobook.auth.dto.UserDTO;
 import com.thoughtworks.herobook.auth.entity.User;
 import com.thoughtworks.herobook.auth.exception.EmailNotUniqueException;
+import com.thoughtworks.herobook.auth.exception.InvalidEmailException;
 import com.thoughtworks.herobook.auth.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,6 +26,13 @@ public class UserService {
     }
 
     public User getByEmail(String email) {
+        checkEmail(email);
         return userRepository.findByEmail(email).orElse(null);
+    }
+
+    private void checkEmail(String email) {
+        if (!email.matches("[\\w.]+@[\\w.]+")) {
+            throw new InvalidEmailException();
+        }
     }
 }

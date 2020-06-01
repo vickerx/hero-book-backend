@@ -3,6 +3,7 @@ package com.thoughtworks.herobook.auth.service;
 import com.thoughtworks.herobook.auth.dto.UserDTO;
 import com.thoughtworks.herobook.auth.entity.User;
 import com.thoughtworks.herobook.auth.exception.EmailNotUniqueException;
+import com.thoughtworks.herobook.auth.exception.InvalidEmailException;
 import com.thoughtworks.herobook.auth.repository.UserRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -85,5 +86,12 @@ public class UserServiceTest {
         var actualUser = userService.getByEmail(email);
 
         Assertions.assertNull(actualUser);
+    }
+
+    @Test
+    void should_throw_invalid_email_exception_when_get_by_email_given_invalid_email() {
+        var email = "123";
+
+        Assertions.assertThrows(InvalidEmailException.class, () -> userService.getByEmail(email));
     }
 }
