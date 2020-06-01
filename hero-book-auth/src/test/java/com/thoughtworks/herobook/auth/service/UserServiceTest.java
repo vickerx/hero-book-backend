@@ -76,4 +76,14 @@ public class UserServiceTest {
         Assertions.assertEquals(user, actualUser);
     }
 
+    @Test
+    void should_return_null_when_get_by_email_given_non_exist_email() {
+        var email = "123@163.com";
+
+        when(userRepository.findByEmail(email)).thenReturn(Optional.empty());
+
+        var actualUser = userService.getByEmail(email);
+
+        Assertions.assertNull(actualUser);
+    }
 }
