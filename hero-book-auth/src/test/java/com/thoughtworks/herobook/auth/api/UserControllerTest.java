@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class AuthControllerTest extends BaseControllerTest{
+public class UserControllerTest extends BaseControllerTest{
 
     @Test
     void should_save_user_to_database() throws Exception {
