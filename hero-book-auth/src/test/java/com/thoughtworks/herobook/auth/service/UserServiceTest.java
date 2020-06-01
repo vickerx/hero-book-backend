@@ -94,4 +94,11 @@ public class UserServiceTest {
 
         Assertions.assertThrows(InvalidEmailException.class, () -> userService.getByEmail(email));
     }
+
+
+    @Test
+    void should_throw_null_pointer_exception_when_get_by_email_given_invalid_email() {
+
+        Assertions.assertThrows(NullPointerException.class, () -> userService.getByEmail(null));
+    }
 }

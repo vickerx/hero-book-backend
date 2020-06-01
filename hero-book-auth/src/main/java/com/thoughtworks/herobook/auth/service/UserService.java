@@ -31,6 +31,10 @@ public class UserService {
     }
 
     private void checkEmail(String email) {
+        if (email == null) {
+            throw new NullPointerException();
+        }
+
         if (!email.matches("[\\w.]+@[\\w.]+")) {
             throw new InvalidEmailException();
         }
