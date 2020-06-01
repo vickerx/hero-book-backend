@@ -3,6 +3,7 @@ package com.thoughtworks.herobook.auth.service;
 import com.thoughtworks.herobook.auth.dto.UserDTO;
 import com.thoughtworks.herobook.auth.entity.User;
 import com.thoughtworks.herobook.auth.exception.EmailNotUniqueException;
+import com.thoughtworks.herobook.auth.repository.ActivationCodeRepository;
 import com.thoughtworks.herobook.auth.exception.InvalidEmailException;
 import com.thoughtworks.herobook.auth.repository.UserRepository;
 import org.junit.jupiter.api.Assertions;
@@ -19,6 +20,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -26,6 +28,9 @@ import static org.mockito.Mockito.when;
 public class UserServiceTest {
     @Mock
     private UserRepository userRepository;
+
+    @Mock
+    private ActivationCodeRepository activationCodeRepository;
 
     @InjectMocks
     private UserService userService;
@@ -57,6 +62,19 @@ public class UserServiceTest {
         assertEquals(username, captorValue.getUsername());
         assertEquals(DigestUtils.md5DigestAsHex(password.getBytes()), captorValue.getPassword());
         assertEquals(email, captorValue.getEmail());
+    }
+
+    @Test
+    void should_save_activation_code_when_user_register_successfully() {
+        String email = "123@163.com";
+        String username = "Jack";
+        String password = "123456";
+        UserDTO requestDTO = UserDTO.builder().username(username).password(password).email(email).build();
+        when(userRepository.findByEmail(email)).thenReturn(Optional.empty());
+
+        userService.userRegistration(requestDTO);
+
+        verify(activationCodeRepository).save(any());
     }
 
     @Test
