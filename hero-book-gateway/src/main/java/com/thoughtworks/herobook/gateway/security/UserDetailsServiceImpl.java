@@ -19,11 +19,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         if (StringUtils.isEmpty(username)) {
-            throw new UsernameNotFoundException("username cannot be empty.");
+            throw new UsernameNotFoundException("email cannot be empty.");
         }
-        UserDto userDto = userApiClient.getUserByUsername(username);
+        UserDto userDto = userApiClient.getUserByEmail(username);
         if (userDto == null) {
-            throw new UsernameNotFoundException("username not found.");
+            throw new UsernameNotFoundException("email not found.");
         }
         return User.withUsername(username).password(userDto.getPassword())
                 .authorities(Lists.newArrayList()).build();

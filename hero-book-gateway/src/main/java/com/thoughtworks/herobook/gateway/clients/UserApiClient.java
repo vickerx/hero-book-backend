@@ -5,5 +5,5 @@ import org.springframework.cloud.openfeign.FeignClient;
 
 @FeignClient(name = "authservice")
 public interface UserApiClient {
-    UserDto getUserByUsername(String username);
+    UserDto getUserByEmail(String email);
 }

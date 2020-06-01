@@ -14,16 +14,16 @@ public class UserDetailsServiceTest {
     void should_get_user_details_when_load_user_by_username() {
         var username = "username";
         var userApiClient = Mockito.mock(UserApiClient.class);
-        var user = UserDto.builder().username(username)
+        var user = UserDto.builder().email(username)
                 .password("{bcrypt}$2a$10$VN7b9yjH3/LMyL1PHW5.1Ot0sq7MHzS.4Tqirulq1/EuGrnyLRwW.").build();
 
-        Mockito.when(userApiClient.getUserByUsername(username)).thenReturn(user);
+        Mockito.when(userApiClient.getUserByEmail(username)).thenReturn(user);
 
         var userDetailsService = new UserDetailsServiceImpl(userApiClient);
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
-        Mockito.verify(userApiClient).getUserByUsername(username);
-        Assertions.assertEquals(user.getUsername(), userDetails.getUsername());
+        Mockito.verify(userApiClient).getUserByEmail(username);
+        Assertions.assertEquals(user.getEmail(), userDetails.getUsername());
         Assertions.assertEquals(user.getPassword(), userDetails.getPassword());
 
     }
@@ -39,7 +39,7 @@ public class UserDetailsServiceTest {
 
         //given 2
         var username2 = "username";
-        Mockito.when(userApiClient.getUserByUsername(username)).thenReturn(null);
+        Mockito.when(userApiClient.getUserByEmail(username)).thenReturn(null);
 
         Assertions.assertThrows(UsernameNotFoundException.class, () -> userDetailsService.loadUserByUsername(username2));
 

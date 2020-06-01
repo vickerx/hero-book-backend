@@ -9,6 +9,6 @@ import lombok.Setter;
 @Data
 @Setter(AccessLevel.NONE)
 public class UserDto {
-    private String username;
+    private String email;
     private String password;
 }

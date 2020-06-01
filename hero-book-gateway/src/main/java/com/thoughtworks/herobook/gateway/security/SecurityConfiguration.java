@@ -10,5 +10,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests().antMatchers(Constants.AUTHENTICATED_URLS).authenticated();
         super.configure(http);
+
     }
 }
