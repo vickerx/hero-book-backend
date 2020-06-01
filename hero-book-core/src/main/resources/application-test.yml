@@ -3,8 +3,10 @@ spring:
     url: jdbc:mysql://${DB_HOST:127.0.0.1}:3306/${DB_NAME:hero_book}?useUnicode=true&characterEncoding=UTF-8
     username: ${DB_USERNAME:root}
     password: ${DB_PASSWORD:123456}
-    jpa:
-      show-sql: true
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: validate
   flyway:
     table: core_flyway_schema_history
     baseline-on-migrate: true
