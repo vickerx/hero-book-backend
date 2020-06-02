@@ -11,6 +11,11 @@ spring:
   flyway:
     table: auth_flyway_schema_history
     baseline-on-migrate: true
+  rabbitmq:
+    host: 127.0.0.1
+    username: guest
+    password: guest
+    virtual-host: /
 eureka:
   client:
     service-url:

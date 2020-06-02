@@ -14,6 +14,7 @@ import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.util.DigestUtils;
 
 import java.util.Optional;
@@ -21,6 +22,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -31,6 +33,9 @@ public class UserServiceTest {
 
     @Mock
     private ActivationCodeRepository activationCodeRepository;
+
+    @Mock
+    private AmqpTemplate amqpTemplate;
 
     @InjectMocks
     private UserService userService;
@@ -75,6 +80,19 @@ public class UserServiceTest {
         userService.userRegistration(requestDTO);
 
         verify(activationCodeRepository).save(any());
+    }
+
+    @Test
+    void should_send_message_to_mq_when_user_register_successfully() {
+        String email = "123@163.com";
+        String username = "Jack";
+        String password = "123456";
+        UserDTO requestDTO = UserDTO.builder().username(username).password(password).email(email).build();
+        when(userRepository.findByEmail(email)).thenReturn(Optional.empty());
+
+        userService.userRegistration(requestDTO);
+
+        verify(amqpTemplate).convertAndSend(anyString(), anyString(), (Object) any());
     }
 
     @Test

@@ -8,18 +8,26 @@ import com.thoughtworks.herobook.auth.repository.ActivationCodeRepository;
 import com.thoughtworks.herobook.auth.exception.InvalidEmailException;
 import com.thoughtworks.herobook.auth.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.DigestUtils;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
+    public static final String USER_ACTIVE_URL_PREFIX = "http://localhost:8083/user/active?code=";
+    public static final String EMAIL_EXCHANGE_NAME = "email";
+    public static final String USER_REGISTRATION_ROUTING_KEY = "user.registration";
+
     private final UserRepository userRepository;
     private final ActivationCodeRepository activationCodeRepository;
+    private final AmqpTemplate amqpTemplate;
 
     @Transactional
     public void userRegistration(UserDTO userDTO) throws EmailNotUniqueException {
@@ -32,13 +40,23 @@ public class UserService {
                 .email(userDTO.getEmail()).build();
         userRepository.save(user);
 
-        String code = UUID.randomUUID().toString().replaceAll("-","");
+        String code = UUID.randomUUID().toString().replaceAll("-", "");
         LocalDateTime expiredTime = LocalDateTime.now().plusDays(1L);
         ActivationCode activationCode = ActivationCode.builder()
                 .user(user)
                 .expiredTime(expiredTime)
                 .activationCode(code).build();
         activationCodeRepository.save(activationCode);
+
+        sendRegistrationEmail(userDTO, code);
+    }
+
+    private void sendRegistrationEmail(UserDTO userDTO, String code) {
+        Map<String, String> map = new HashMap<>();
+        map.put("username", userDTO.getUsername());
+        map.put("emailAddress", userDTO.getEmail());
+        map.put("activationLink", USER_ACTIVE_URL_PREFIX + code);
+        amqpTemplate.convertAndSend(EMAIL_EXCHANGE_NAME, USER_REGISTRATION_ROUTING_KEY, map);
     }
 
     public User getByEmail(String email) {
