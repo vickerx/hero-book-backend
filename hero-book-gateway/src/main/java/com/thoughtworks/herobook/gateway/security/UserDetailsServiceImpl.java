@@ -26,6 +26,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             throw new UsernameNotFoundException("email not found.");
         }
         return User.withUsername(username).password(userResponse.getPassword())
+                .disabled(!userResponse.getIsActivated())
                 .authorities(Lists.newArrayList()).build();
     }
 }

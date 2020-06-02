@@ -15,7 +15,9 @@ public class UserDetailsServiceTest {
         var username = "username";
         var userApiClient = Mockito.mock(UserApiClient.class);
         var user = UserResponse.builder().email(username)
-                .password("{bcrypt}$2a$10$VN7b9yjH3/LMyL1PHW5.1Ot0sq7MHzS.4Tqirulq1/EuGrnyLRwW.").build();
+                .password("{bcrypt}$2a$10$VN7b9yjH3/LMyL1PHW5.1Ot0sq7MHzS.4Tqirulq1/EuGrnyLRwW.")
+                .isActivated(true)
+                .build();
 
         Mockito.when(userApiClient.getByEmail(username)).thenReturn(user);
 
@@ -25,6 +27,7 @@ public class UserDetailsServiceTest {
         Mockito.verify(userApiClient).getByEmail(username);
         Assertions.assertEquals(user.getEmail(), userDetails.getUsername());
         Assertions.assertEquals(user.getPassword(), userDetails.getPassword());
+        Assertions.assertEquals(user.getIsActivated(), userDetails.isEnabled());
 
     }
 
