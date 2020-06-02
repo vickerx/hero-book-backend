@@ -1,7 +1,7 @@
 package com.thoughtworks.herobook.gateway.security;
 
+import com.thoughtworks.herobook.auth.dto.UserResponse;
 import com.thoughtworks.herobook.gateway.clients.UserApiClient;
-import com.thoughtworks.herobook.gateway.clients.dto.UserDto;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -14,15 +14,15 @@ public class UserDetailsServiceTest {
     void should_get_user_details_when_load_user_by_username() {
         var username = "username";
         var userApiClient = Mockito.mock(UserApiClient.class);
-        var user = UserDto.builder().email(username)
+        var user = UserResponse.builder().email(username)
                 .password("{bcrypt}$2a$10$VN7b9yjH3/LMyL1PHW5.1Ot0sq7MHzS.4Tqirulq1/EuGrnyLRwW.").build();
 
-        Mockito.when(userApiClient.getUserByEmail(username)).thenReturn(user);
+        Mockito.when(userApiClient.getByEmail(username)).thenReturn(user);
 
         var userDetailsService = new UserDetailsServiceImpl(userApiClient);
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
-        Mockito.verify(userApiClient).getUserByEmail(username);
+        Mockito.verify(userApiClient).getByEmail(username);
         Assertions.assertEquals(user.getEmail(), userDetails.getUsername());
         Assertions.assertEquals(user.getPassword(), userDetails.getPassword());
 
@@ -39,7 +39,7 @@ public class UserDetailsServiceTest {
 
         //given 2
         var username2 = "username";
-        Mockito.when(userApiClient.getUserByEmail(username)).thenReturn(null);
+        Mockito.when(userApiClient.getByEmail(username)).thenReturn(null);
 
         Assertions.assertThrows(UsernameNotFoundException.class, () -> userDetailsService.loadUserByUsername(username2));
 

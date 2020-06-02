@@ -1,8 +1,8 @@
 package com.thoughtworks.herobook.gateway.security;
 
 import com.google.common.collect.Lists;
+import com.thoughtworks.herobook.auth.dto.UserResponse;
 import com.thoughtworks.herobook.gateway.clients.UserApiClient;
-import com.thoughtworks.herobook.gateway.clients.dto.UserDto;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -21,11 +21,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         if (StringUtils.isEmpty(username)) {
             throw new UsernameNotFoundException("email cannot be empty.");
         }
-        UserDto userDto = userApiClient.getUserByEmail(username);
-        if (userDto == null) {
+        UserResponse userResponse = userApiClient.getByEmail(username);
+        if (userResponse == null) {
             throw new UsernameNotFoundException("email not found.");
         }
-        return User.withUsername(username).password(userDto.getPassword())
+        return User.withUsername(username).password(userResponse.getPassword())
                 .authorities(Lists.newArrayList()).build();
     }
 }
