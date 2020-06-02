@@ -1,7 +1,7 @@
 package com.thoughtworks.herobook.auth.api;
 
 import com.thoughtworks.herobook.auth.dto.UserDTO;
-import com.thoughtworks.herobook.auth.dto.response.UserResponse;
+import com.thoughtworks.herobook.auth.dto.UserResponse;
 import com.thoughtworks.herobook.auth.entity.User;
 import com.thoughtworks.herobook.auth.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/user")
-public class UserController {
+public class UserController implements UserApi {
     private final UserService userService;
 
     @PostMapping("/registration")
@@ -26,6 +26,16 @@ public class UserController {
 
     @GetMapping("/get-by-email")
     public UserResponse getByEmail(@RequestParam("email") String email) {
-        return UserResponse.of(userService.getByEmail(email));
+        return of(userService.getByEmail(email));
+    }
+
+    public UserResponse of(User user) {
+        return UserResponse.builder()
+                .id(user.getId())
+                .email(user.getEmail())
+                .password(user.getPassword())
+                .isActivated(user.getIsActivated())
+                .username(user.getUsername())
+                .build();
     }
 }
