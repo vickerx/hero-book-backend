@@ -11,4 +11,3 @@ spring:
   freemarker:
     prefix: /templates/
     suffix: .ftl
-
