@@ -14,10 +14,10 @@ import javax.validation.constraints.Pattern;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserDTO {
-    @Length(min = 1, max = 20, message = "昵称仅允许1-20个字符")
+    @Length(min = 1, max = 20, message = "Username only allows 1-20 characters")
     private String username;
-    @Pattern(regexp = "^[\\x21-\\x7e]{8,30}$", message = "密码仅允许8-30个ASCII字符")
+    @Pattern(regexp = "^[\\x21-\\x7e]{8,30}$", message = "Password only allows 8-20 ASCII characters")
     private String password;
-    @Email(message = "请输入正确的邮箱格式")
+    @Email(message = "Please enter the correct email")
     private String email;
 }

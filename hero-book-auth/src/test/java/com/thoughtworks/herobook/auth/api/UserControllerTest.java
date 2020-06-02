@@ -30,7 +30,7 @@ public class UserControllerTest extends BaseControllerTest {
     private ActivationCodeRepository activationCodeRepository;
 
     @Test
-    void should_save_user_to_database() throws Exception {
+    void should_register_user_successfully() throws Exception {
         mockMvc.perform(post("/user/registration")
                 .param("username", "Jack")
                 .param("password", "12345678")

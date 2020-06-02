@@ -3,10 +3,10 @@ package com.thoughtworks.herobook.auth.service;
 import com.thoughtworks.herobook.auth.dto.UserDTO;
 import com.thoughtworks.herobook.auth.entity.ActivationCode;
 import com.thoughtworks.herobook.auth.entity.User;
-import com.thoughtworks.herobook.auth.exception.CodeExpiredException;
-import com.thoughtworks.herobook.auth.exception.CodeHasBeenActivated;
-import com.thoughtworks.herobook.auth.exception.CodeNotFoundException;
-import com.thoughtworks.herobook.auth.exception.EmailNotUniqueException;
+import com.thoughtworks.herobook.auth.exception.ExpiredException;
+import com.thoughtworks.herobook.auth.exception.UserHasBeenActivatedException;
+import com.thoughtworks.herobook.auth.exception.NotFoundException;
+import com.thoughtworks.herobook.auth.exception.NotUniqueException;
 import com.thoughtworks.herobook.auth.repository.ActivationCodeRepository;
 import com.thoughtworks.herobook.auth.exception.InvalidEmailException;
 import com.thoughtworks.herobook.auth.repository.UserRepository;
@@ -55,7 +55,7 @@ public class UserServiceTest {
         UserDTO requestDTO = UserDTO.builder().username("Jack").password("123456").email(email).build();
         when(userRepository.findByEmail(email)).thenReturn(Optional.of(User.builder().email(email).build()));
 
-        assertThrows(EmailNotUniqueException.class, () -> userService.userRegistration(requestDTO));
+        assertThrows(NotUniqueException.class, () -> userService.userRegistration(requestDTO));
     }
 
     @Test
@@ -149,7 +149,7 @@ public class UserServiceTest {
         String code = "zxdzxcvcxzv";
         when(activationCodeRepository.findByActivationCode(code)).thenReturn(Optional.empty());
 
-        assertThrows(CodeNotFoundException.class, () -> userService.activateAccount(code));
+        assertThrows(NotFoundException.class, () -> userService.activateAccount(code));
     }
 
     @Test
@@ -163,7 +163,7 @@ public class UserServiceTest {
                 .build();
         when(activationCodeRepository.findByActivationCode(code)).thenReturn(Optional.of(activationCode));
 
-        assertThrows(CodeHasBeenActivated.class, () -> userService.activateAccount(code));
+        assertThrows(UserHasBeenActivatedException.class, () -> userService.activateAccount(code));
     }
 
     @Test
@@ -177,7 +177,7 @@ public class UserServiceTest {
                 .build();
         when(activationCodeRepository.findByActivationCode(code)).thenReturn(Optional.of(activationCode));
 
-        assertThrows(CodeExpiredException.class, () -> userService.activateAccount(code));
+        assertThrows(ExpiredException.class, () -> userService.activateAccount(code));
     }
 
     @Test

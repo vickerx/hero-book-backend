@@ -3,10 +3,10 @@ package com.thoughtworks.herobook.auth.service;
 import com.thoughtworks.herobook.auth.dto.UserDTO;
 import com.thoughtworks.herobook.auth.entity.ActivationCode;
 import com.thoughtworks.herobook.auth.entity.User;
-import com.thoughtworks.herobook.auth.exception.CodeExpiredException;
-import com.thoughtworks.herobook.auth.exception.CodeHasBeenActivated;
-import com.thoughtworks.herobook.auth.exception.CodeNotFoundException;
-import com.thoughtworks.herobook.auth.exception.EmailNotUniqueException;
+import com.thoughtworks.herobook.auth.exception.ExpiredException;
+import com.thoughtworks.herobook.auth.exception.UserHasBeenActivatedException;
+import com.thoughtworks.herobook.auth.exception.NotFoundException;
+import com.thoughtworks.herobook.auth.exception.NotUniqueException;
 import com.thoughtworks.herobook.auth.repository.ActivationCodeRepository;
 import com.thoughtworks.herobook.auth.exception.InvalidEmailException;
 import com.thoughtworks.herobook.auth.repository.UserRepository;
@@ -27,15 +27,16 @@ public class UserService {
     public static final String USER_ACTIVE_URL_PREFIX = "http://localhost:8083/user/active?code=";
     public static final String EMAIL_EXCHANGE_NAME = "email";
     public static final String USER_REGISTRATION_ROUTING_KEY = "user.registration";
+    public static final int ACTIVATION_CODE_EXPIRED_DAYS = 1;
 
     private final UserRepository userRepository;
     private final ActivationCodeRepository activationCodeRepository;
     private final AmqpTemplate amqpTemplate;
 
     @Transactional
-    public void userRegistration(UserDTO userDTO) throws EmailNotUniqueException {
+    public void userRegistration(UserDTO userDTO) {
         userRepository.findByEmail(userDTO.getEmail()).ifPresent(user -> {
-            throw new EmailNotUniqueException("邮箱已被注册");
+            throw new NotUniqueException("The email has been registered");
         });
         User user = User.builder()
                 .username(userDTO.getUsername())
@@ -44,7 +45,7 @@ public class UserService {
         userRepository.save(user);
 
         String code = UUID.randomUUID().toString().replaceAll("-", "");
-        LocalDateTime expiredTime = LocalDateTime.now().plusDays(1L);
+        LocalDateTime expiredTime = LocalDateTime.now().plusDays(ACTIVATION_CODE_EXPIRED_DAYS);
         ActivationCode activationCode = ActivationCode.builder()
                 .user(user)
                 .expiredTime(expiredTime)
@@ -79,15 +80,21 @@ public class UserService {
 
     public void activateAccount(String code) {
         ActivationCode activationCode = activationCodeRepository
-                .findByActivationCode(code).orElseThrow(CodeNotFoundException::new);
+                .findByActivationCode(code)
+                .orElseThrow(() -> new NotFoundException("The activation code is not found"));
+        validate(activationCode);
+
         User user = activationCode.getUser();
-        if (user.getIsActivated()) {
-            throw new CodeHasBeenActivated("帐户已激活，请登录");
-        }
-        if (activationCode.getExpiredTime().isBefore(LocalDateTime.now())) {
-            throw new CodeExpiredException("激活码已失效");
-        }
         user.setIsActivated(true);
         userRepository.save(user);
+    }
+
+    private void validate(ActivationCode activationCode) {
+        if (activationCode.getUser().getIsActivated()) {
+            throw new UserHasBeenActivatedException("The account has been activated, please login");
+        }
+        if (activationCode.getExpiredTime().isBefore(LocalDateTime.now())) {
+            throw new ExpiredException("The activation code is expired");
+        }
     }
 }

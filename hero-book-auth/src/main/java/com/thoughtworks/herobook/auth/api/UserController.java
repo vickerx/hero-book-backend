@@ -21,7 +21,7 @@ public class UserController implements UserApi {
     private final UserService userService;
 
     @PostMapping("/registration")
-    public ResponseEntity<Void> userRegistration(UserDTO userDTO) {
+    public ResponseEntity<Void> userRegistration(@Valid UserDTO userDTO) {
         userService.userRegistration(userDTO);
         return ResponseEntity.ok(null);
     }
