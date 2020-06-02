@@ -3,13 +3,19 @@ package com.thoughtworks.herobook.auth.api;
 import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.github.springtestdbunit.annotation.DatabaseTearDown;
+import com.thoughtworks.herobook.auth.entity.ActivationCode;
+import com.thoughtworks.herobook.auth.entity.User;
+import com.thoughtworks.herobook.auth.repository.ActivationCodeRepository;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockitoTestExecutionListener;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+
+import java.time.LocalDateTime;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -20,6 +26,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         MockitoTestExecutionListener.class,
         TransactionDbUnitTestExecutionListener.class})
 public class UserControllerTest extends BaseControllerTest {
+    @Autowired
+    private ActivationCodeRepository activationCodeRepository;
 
     @Test
     void should_save_user_to_database() throws Exception {
@@ -55,6 +63,27 @@ public class UserControllerTest extends BaseControllerTest {
                 .param("password", "123456")
                 .param("email", "123"))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void should_active_user_account_after_user_registration_given_valid_activation_code() throws Exception {
+        User user = User.builder()
+                .username("Jack")
+                .email("123@163.com")
+                .password("123456")
+                .isActivated(false)
+                .build();
+        String code = "xzcvcvxczv";
+        ActivationCode activationCode = ActivationCode.builder()
+                .user(user)
+                .activationCode(code)
+                .expiredTime(LocalDateTime.now().plusDays(1))
+                .build();
+        activationCodeRepository.save(activationCode);
+
+        mockMvc.perform(get("/user/activate")
+                .param("code", code))
+                .andExpect(status().isOk());
     }
 
     @Test

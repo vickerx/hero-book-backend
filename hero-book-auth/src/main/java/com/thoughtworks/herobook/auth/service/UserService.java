@@ -3,6 +3,9 @@ package com.thoughtworks.herobook.auth.service;
 import com.thoughtworks.herobook.auth.dto.UserDTO;
 import com.thoughtworks.herobook.auth.entity.ActivationCode;
 import com.thoughtworks.herobook.auth.entity.User;
+import com.thoughtworks.herobook.auth.exception.CodeExpiredException;
+import com.thoughtworks.herobook.auth.exception.CodeHasBeenActivated;
+import com.thoughtworks.herobook.auth.exception.CodeNotFoundException;
 import com.thoughtworks.herobook.auth.exception.EmailNotUniqueException;
 import com.thoughtworks.herobook.auth.repository.ActivationCodeRepository;
 import com.thoughtworks.herobook.auth.exception.InvalidEmailException;
@@ -72,5 +75,19 @@ public class UserService {
         if (!email.matches("[\\w.]+@[\\w.]+")) {
             throw new InvalidEmailException();
         }
+    }
+
+    public void activateAccount(String code) {
+        ActivationCode activationCode = activationCodeRepository
+                .findByActivationCode(code).orElseThrow(CodeNotFoundException::new);
+        User user = activationCode.getUser();
+        if (user.getIsActivated()) {
+            throw new CodeHasBeenActivated("帐户已激活，请登录");
+        }
+        if (activationCode.getExpiredTime().isBefore(LocalDateTime.now())) {
+            throw new CodeExpiredException("激活码已失效");
+        }
+        user.setIsActivated(true);
+        userRepository.save(user);
     }
 }

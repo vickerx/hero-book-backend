@@ -8,8 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
@@ -23,6 +23,12 @@ public class UserController implements UserApi {
     @PostMapping("/registration")
     public ResponseEntity<Void> userRegistration(UserDTO userDTO) {
         userService.userRegistration(userDTO);
+        return ResponseEntity.ok(null);
+    }
+
+    @GetMapping("/activate")
+    public ResponseEntity<Void> activateAccount(@RequestParam("code") String code) {
+        userService.activateAccount(code);
         return ResponseEntity.ok(null);
     }
 
