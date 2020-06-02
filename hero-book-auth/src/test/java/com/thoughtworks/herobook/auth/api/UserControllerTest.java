@@ -25,9 +25,36 @@ public class UserControllerTest extends BaseControllerTest {
     void should_save_user_to_database() throws Exception {
         mockMvc.perform(post("/user/registration")
                 .param("username", "Jack")
-                .param("password", "123456")
+                .param("password", "12345678")
                 .param("email", "123@163.com"))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    void should_return_400_status_code_when_user_registration_given_invalid_username() throws Exception {
+        mockMvc.perform(post("/user/registration")
+                .param("username", "")
+                .param("password", "12345678")
+                .param("email", "123@163.com"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void should_return_400_status_code_when_user_registration_given_invalid_password() throws Exception {
+        mockMvc.perform(post("/user/registration")
+                .param("username", "")
+                .param("password", "123456")
+                .param("email", "123@163.com"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void should_return_400_status_code_when_user_registration_given_invalid_email_address() throws Exception {
+        mockMvc.perform(post("/user/registration")
+                .param("username", "")
+                .param("password", "123456")
+                .param("email", "123"))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
