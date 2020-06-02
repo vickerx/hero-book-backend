@@ -10,6 +10,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequestMapping("/user")
 public interface UserApiClient {
 
-    @GetMapping("/get-user-by-email")
+    @GetMapping("/get-by-email")
     UserDto getUserByEmail(@RequestParam("email") String email);
 }
