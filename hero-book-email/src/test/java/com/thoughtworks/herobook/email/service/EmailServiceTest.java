@@ -40,10 +40,10 @@ public class EmailServiceTest {
 
         verify(emailUtils, only()).sendEmail(emailVOArgumentCaptor.capture());
         EmailVO emailVO = emailVOArgumentCaptor.getValue();
-        assertEquals(emailVO.getSubject(), EmailType.USER_REGISTRATION.getSubject());
-        assertEquals(emailVO.getTemplateName(), EmailType.USER_REGISTRATION.getTemplateName());
-        assertEquals(emailVO.getTargetEmailAddress(), targetEmailAddress);
-        assertEquals(emailVO.getModel().get("username"), username);
-        assertEquals(emailVO.getModel().get("activationLink"), activationLink);
+        assertEquals(EmailType.USER_REGISTRATION.getSubject(), emailVO.getSubject());
+        assertEquals(EmailType.USER_REGISTRATION.getTemplateName(), emailVO.getTemplateName());
+        assertEquals(targetEmailAddress, emailVO.getTargetEmailAddress());
+        assertEquals(username, emailVO.getModel().get("username"));
+        assertEquals(activationLink, emailVO.getModel().get("activationLink"));
     }
 }
