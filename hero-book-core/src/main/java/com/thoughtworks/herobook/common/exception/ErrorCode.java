@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 public enum ErrorCode {
     RESOURCE_NOT_FOUND("resource_not_found"),
+    INVALIDATE_PARAMS("invalidate params"),
     HERO_BOOK_INTERNAL_ERROR("hero_book_internal_error"),
     ;
 

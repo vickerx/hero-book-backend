@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import javax.validation.ValidationException;
+
 @RestControllerAdvice
 @Slf4j
 public class ControllerAdvice {
@@ -25,5 +27,13 @@ public class ControllerAdvice {
     public ErrorResult handleResourceNotFoundException(ResourceNotFoundException e) {
         log.error(e.getMessage(), e);
         return new ErrorResult(ErrorCode.RESOURCE_NOT_FOUND, e.getMessage());
+    }
+
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResult handleValidationException(ValidationException e) {
+        log.error(e.getMessage(), e);
+        return new ErrorResult(ErrorCode.INVALIDATE_PARAMS, e.getMessage());
     }
 }

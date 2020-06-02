@@ -16,6 +16,8 @@ public abstract class HeroStoryMapper {
 
     public abstract HeroStoryDetailDTO toDetailDTO(HeroStory heroStory);
 
+    public abstract HeroStory detailDTOtoEntity(HeroStoryDetailDTO heroStoryDetailDTO);
+
     String calculateContentAbstract(HeroStory heroStory) {
         final int maxSize = 297;
         return heroStory.getContent().length() > maxSize

@@ -4,7 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.Length;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.NotBlank;
 import java.util.Date;
 
 @Data
@@ -14,10 +17,12 @@ import java.util.Date;
 public class HeroStoryDetailDTO {
     private Long id;
 
+    @Length(min = 1, max = 200, message = "title's length must between 1 and 200 characters")
     private String title;
 
     private String author;
 
+    @NotBlank(message = "content must not be blank")
     private String content;
 
     private Date createdTime;

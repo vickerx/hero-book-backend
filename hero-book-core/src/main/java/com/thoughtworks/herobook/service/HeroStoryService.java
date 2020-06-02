@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
@@ -26,5 +27,10 @@ public class HeroStoryService {
     public Page<HeroStoryDTO> getHeroStoriesByPage(Pageable pageable) {
         return heroStoryRepository.findAllByOrderByUpdatedTimeDesc(pageable)
                 .map(HeroStoryMapper.HERO_STORY_MAPPER::toDTO);
+    }
+
+    @Transactional
+    public void createHeroStory(HeroStoryDetailDTO detailDTO) {
+        heroStoryRepository.save(HeroStoryMapper.HERO_STORY_MAPPER.detailDTOtoEntity(detailDTO));
     }
 }
