@@ -1,0 +1,2 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+com.thoughtworks.herobook.common.configuration.GlobalExceptionHandlerAutoConfiguration
