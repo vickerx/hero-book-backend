@@ -1,11 +1,15 @@
 package com.thoughtworks.herobook.auth.exception;
 
-public class NotFoundException extends RuntimeException{
+import com.thoughtworks.herobook.common.exception.BasicException;
+import com.thoughtworks.herobook.common.exception.ErrorCode;
+import org.springframework.http.HttpStatus;
+
+public class NotFoundException extends BasicException {
     public NotFoundException() {
         super();
     }
 
-    public NotFoundException(String message) {
-        super(message);
+    public NotFoundException(HttpStatus httpStatus, ErrorCode errorCode, String message) {
+        super(httpStatus, errorCode, message);
     }
 }

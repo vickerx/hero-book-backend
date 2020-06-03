@@ -1,10 +1,15 @@
 package com.thoughtworks.herobook.auth.exception;
 
-public class InvalidEmailException extends RuntimeException {
+import com.thoughtworks.herobook.common.exception.BasicException;
+import com.thoughtworks.herobook.common.exception.ErrorCode;
+import org.springframework.http.HttpStatus;
+
+public class InvalidEmailException extends BasicException {
     public InvalidEmailException() {
+        super();
     }
 
-    public InvalidEmailException(String message) {
-        super(message);
+    public InvalidEmailException(HttpStatus httpStatus, ErrorCode errorCode, String message) {
+        super(httpStatus, errorCode, message);
     }
 }

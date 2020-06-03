@@ -5,4 +5,5 @@ include 'hero-book-core'
 include 'hero-book-registry'
 include 'hero-book-email'
 include 'hero-book-auth-api'
+include 'hero-book-common'
 

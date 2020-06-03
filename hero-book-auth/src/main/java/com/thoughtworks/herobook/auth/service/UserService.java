@@ -10,8 +10,10 @@ import com.thoughtworks.herobook.auth.exception.NotUniqueException;
 import com.thoughtworks.herobook.auth.repository.ActivationCodeRepository;
 import com.thoughtworks.herobook.auth.exception.InvalidEmailException;
 import com.thoughtworks.herobook.auth.repository.UserRepository;
+import com.thoughtworks.herobook.common.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.core.AmqpTemplate;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.DigestUtils;
@@ -36,7 +38,7 @@ public class UserService {
     @Transactional
     public void userRegistration(UserDTO userDTO) {
         userRepository.findByEmail(userDTO.getEmail()).ifPresent(user -> {
-            throw new NotUniqueException("The email has been registered");
+            throw new NotUniqueException(HttpStatus.BAD_REQUEST, ErrorCode.USER_INPUT_ERROR, "The email has been registered");
         });
         User user = User.builder()
                 .username(userDTO.getUsername())
@@ -81,7 +83,7 @@ public class UserService {
     public void activateAccount(String code) {
         ActivationCode activationCode = activationCodeRepository
                 .findByActivationCode(code)
-                .orElseThrow(() -> new NotFoundException("The activation code is not found"));
+                .orElseThrow(() -> new NotFoundException(HttpStatus.BAD_REQUEST, ErrorCode.USER_INPUT_ERROR, "The activation code is not found"));
         validate(activationCode);
 
         User user = activationCode.getUser();
@@ -94,7 +96,7 @@ public class UserService {
             throw new UserHasBeenActivatedException("The account has been activated, please login");
         }
         if (activationCode.getExpiredTime().isBefore(LocalDateTime.now())) {
-            throw new ExpiredException("The activation code is expired");
+            throw new ExpiredException(HttpStatus.BAD_REQUEST, ErrorCode.USER_INPUT_ERROR, "The activation code is expired");
         }
     }
 }

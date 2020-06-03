@@ -55,6 +55,8 @@ subprojects {
         dependencies {
             dependency "org.mapstruct:mapstruct:${mapStructVersion}"
             dependency "org.mapstruct:mapstruct-processor:${mapStructVersion}"
+            dependency "com.github.springtestdbunit:spring-test-dbunit:${springTestDBUnitVersion}"
+            dependency "org.dbunit:dbunit:${dbunitVersion}"
         }
         imports {
             mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
