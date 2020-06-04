@@ -14,6 +14,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 @Slf4j
 @AllArgsConstructor
 public class UserDetailsServiceImpl implements UserDetailsService {
+
     private UserApiClient userApiClient;
 
     @Override

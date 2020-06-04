@@ -17,6 +17,7 @@ dependencies {
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }
+    testCompile 'org.springframework.cloud:spring-cloud-contract-wiremock'
 
     compile project(':hero-book-auth-api')
 }

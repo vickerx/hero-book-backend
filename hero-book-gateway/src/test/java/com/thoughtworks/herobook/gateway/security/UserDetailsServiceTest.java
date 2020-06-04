@@ -47,5 +47,4 @@ public class UserDetailsServiceTest {
         Assertions.assertThrows(UsernameNotFoundException.class, () -> userDetailsService.loadUserByUsername(username2));
 
     }
-
 }
