@@ -26,7 +26,7 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class UserService {
-    public static final String USER_ACTIVE_URL_PREFIX = "http://localhost:8083/user/active?code=";
+    public static final String USER_ACTIVE_URL_PREFIX = "http://localhost:8080/#/signup-active/";
     public static final String EMAIL_EXCHANGE_NAME = "email";
     public static final String USER_REGISTRATION_ROUTING_KEY = "user.registration";
     public static final int ACTIVATION_CODE_EXPIRED_DAYS = 1;
@@ -38,12 +38,14 @@ public class UserService {
     @Transactional
     public void userRegistration(UserDTO userDTO) {
         userRepository.findByEmail(userDTO.getEmail()).ifPresent(user -> {
-            throw new NotUniqueException(HttpStatus.BAD_REQUEST, ErrorCode.USER_INPUT_ERROR, "The email has been registered");
+            throw new NotUniqueException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_UNIQUE_ERROR, "The email has been registered");
         });
         User user = User.builder()
                 .username(userDTO.getUsername())
                 .password(DigestUtils.md5DigestAsHex(userDTO.getPassword().getBytes()))
-                .email(userDTO.getEmail()).build();
+                .email(userDTO.getEmail())
+                .isActivated(false)
+                .build();
         userRepository.save(user);
 
         String code = UUID.randomUUID().toString().replaceAll("-", "");
@@ -83,7 +85,7 @@ public class UserService {
     public void activateAccount(String code) {
         ActivationCode activationCode = activationCodeRepository
                 .findByActivationCode(code)
-                .orElseThrow(() -> new NotFoundException(HttpStatus.BAD_REQUEST, ErrorCode.USER_INPUT_ERROR, "The activation code is not found"));
+                .orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND, ErrorCode.RESOURCE_NOT_FOUND, "The activation code is not found"));
         validate(activationCode);
 
         User user = activationCode.getUser();
@@ -93,10 +95,10 @@ public class UserService {
 
     private void validate(ActivationCode activationCode) {
         if (activationCode.getUser().getIsActivated()) {
-            throw new UserHasBeenActivatedException("The account has been activated, please login");
+            throw new UserHasBeenActivatedException(HttpStatus.BAD_REQUEST, ErrorCode.ACCOUNT_HAS_BEEN_ACTIVATED, "The account has been activated, please login");
         }
         if (activationCode.getExpiredTime().isBefore(LocalDateTime.now())) {
-            throw new ExpiredException(HttpStatus.BAD_REQUEST, ErrorCode.USER_INPUT_ERROR, "The activation code is expired");
+            throw new ExpiredException(HttpStatus.BAD_REQUEST, ErrorCode.CODE_HAS_EXPIRED, "The activation code is expired");
         }
     }
 }

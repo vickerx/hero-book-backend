@@ -6,6 +6,9 @@ public enum ErrorCode {
     USER_INPUT_ERROR("user_input_error"),
     RESOURCE_NOT_FOUND("resource_not_found"),
     HERO_BOOK_INTERNAL_ERROR("hero_book_internal_error"),
+    NOT_UNIQUE_ERROR("not_unique_error"),
+    CODE_HAS_EXPIRED("code_has_expired"),
+    ACCOUNT_HAS_BEEN_ACTIVATED("account_has_been_activated")
     ;
 
     private String value;
