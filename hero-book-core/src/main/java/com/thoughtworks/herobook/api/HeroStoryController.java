@@ -16,19 +16,19 @@ import javax.validation.ValidationException;
 
 
 @RestController
-@RequestMapping("/api/hero-story")
+@RequestMapping("/hero-story")
 @CrossOrigin
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class HeroStoryController {
 
     private final HeroStoryService heroStoryService;
 
-    @GetMapping("/{id}")
+    @GetMapping("/open/{id}")
     public HeroStoryDetailDTO getHeroStoryById(@PathVariable Long id) {
         return heroStoryService.getHeroStoryDetailById(id);
     }
 
-    @GetMapping(params = "page")
+    @GetMapping(value = "/open", params = "page")
     public Page<HeroStoryDTO> getHeroStoriesByPage(Pageable pageable) {
         return heroStoryService.getHeroStoriesByPage(pageable);
     }

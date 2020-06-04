@@ -46,7 +46,7 @@ public class HeroStoryControllerTest extends BaseControllerTest {
     @Test
     void should_post_hero_story_success() throws Exception {
         HeroStory heroStory = HeroStoryMockData.mock();
-        mockMvc.perform(post("/api/hero-story")
+        mockMvc.perform(post("/hero-story")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(heroStory)))
                 .andExpect(status().isCreated());
@@ -56,7 +56,7 @@ public class HeroStoryControllerTest extends BaseControllerTest {
     void should_create_hero_story_failed_when_title_is_empty() throws Exception {
         HeroStory heroStory = HeroStoryMockData.mock();
         heroStory.setTitle("");
-        mockMvc.perform(post("/api/hero-story")
+        mockMvc.perform(post("/hero-story")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(heroStory)))
                 .andExpect(status().isBadRequest())
@@ -71,7 +71,7 @@ public class HeroStoryControllerTest extends BaseControllerTest {
                 "1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890" +
                 "1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890" +
                 "1");
-        mockMvc.perform(post("/api/hero-story")
+        mockMvc.perform(post("/hero-story")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(heroStory)))
                 .andExpect(status().isBadRequest())
@@ -83,7 +83,7 @@ public class HeroStoryControllerTest extends BaseControllerTest {
     void should_create_hero_story_failed_when_content_is_blank() throws Exception {
         HeroStory heroStory = HeroStoryMockData.mock();
         heroStory.setContent("");
-        mockMvc.perform(post("/api/hero-story")
+        mockMvc.perform(post("/hero-story")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(heroStory)))
                 .andExpect(status().isBadRequest())
@@ -93,7 +93,7 @@ public class HeroStoryControllerTest extends BaseControllerTest {
 
     @Test
     void should_get_hero_story_by_id() throws Exception {
-        mockMvc.perform(get("/api/hero-story/" + this.mockHeroStory.getId())
+        mockMvc.perform(get("/hero-story/open/" + this.mockHeroStory.getId())
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.title", is("Title")))
@@ -103,13 +103,13 @@ public class HeroStoryControllerTest extends BaseControllerTest {
 
     @Test
     void should_get_hero_story_pageable() throws Exception {
-        mockMvc.perform(get("/api/hero-story")
+        mockMvc.perform(get("/hero-story/open")
                 .contentType(MediaType.APPLICATION_JSON)
                 .param("page", "7")
                 .param("size", "5"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.number", is(7)))
                 .andExpect(jsonPath("$.totalPages", is(4)))
-                .andExpect(jsonPath("$.totalElements", is(18)));
+                .andExpect(jsonPath("$.totalElements", is(19)));
     }
 }
