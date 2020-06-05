@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(value = BindException.class)
+    @ExceptionHandler(value = {BindException.class})
     public ResponseEntity<ErrorResult> validateExceptionHandler(BindException bindException) {
         log.error(bindException.getMessage(), bindException);
         String errorMessage = bindException.getAllErrors().stream()

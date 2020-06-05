@@ -37,4 +37,6 @@ dependencies {
     annotationProcessor 'org.mapstruct:mapstruct-processor'
     implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+    compile project(':hero-book-common')
 }
