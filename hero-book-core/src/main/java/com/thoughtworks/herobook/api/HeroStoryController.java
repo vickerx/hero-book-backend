@@ -1,5 +1,6 @@
 package com.thoughtworks.herobook.api;
 
+import com.thoughtworks.herobook.common.exception.ParamsValidateException;
 import com.thoughtworks.herobook.dto.HeroStoryDTO;
 import com.thoughtworks.herobook.dto.HeroStoryDetailDTO;
 import com.thoughtworks.herobook.service.HeroStoryService;
@@ -12,7 +13,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.validation.ValidationException;
 
 
 @RestController
@@ -23,12 +23,12 @@ public class HeroStoryController {
 
     private final HeroStoryService heroStoryService;
 
-    @GetMapping("/open/{id}")
+    @GetMapping("/{id}")
     public HeroStoryDetailDTO getHeroStoryById(@PathVariable Long id) {
         return heroStoryService.getHeroStoryDetailById(id);
     }
 
-    @GetMapping(value = "/open", params = "page")
+    @GetMapping(params = "page")
     public Page<HeroStoryDTO> getHeroStoriesByPage(Pageable pageable) {
         return heroStoryService.getHeroStoriesByPage(pageable);
     }
@@ -38,7 +38,7 @@ public class HeroStoryController {
     public void createHeroStory(@RequestBody @Valid HeroStoryDetailDTO detailDTO,
                                 BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            throw new ValidationException(bindingResult.getFieldError().getDefaultMessage());
+            throw new ParamsValidateException(bindingResult.getFieldError().getDefaultMessage());
         }
         heroStoryService.createHeroStory(detailDTO);
     }

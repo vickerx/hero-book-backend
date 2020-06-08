@@ -61,7 +61,7 @@ public class HeroStoryControllerTest extends BaseControllerTest {
                 .content(objectMapper.writeValueAsString(heroStory)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message", is("title's length must between 1 and 200 characters")))
-                .andExpect(jsonPath("$.error_code", is(ErrorCode.INVALIDATE_PARAMS.getValue())));
+                .andExpect(jsonPath("$.error_code", is(ErrorCode.USER_INPUT_ERROR.getValue())));
     }
 
     @Test
@@ -76,7 +76,7 @@ public class HeroStoryControllerTest extends BaseControllerTest {
                 .content(objectMapper.writeValueAsString(heroStory)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message", is("title's length must between 1 and 200 characters")))
-                .andExpect(jsonPath("$.error_code", is(ErrorCode.INVALIDATE_PARAMS.getValue())));
+                .andExpect(jsonPath("$.error_code", is(ErrorCode.USER_INPUT_ERROR.getValue())));
     }
 
     @Test
@@ -88,12 +88,12 @@ public class HeroStoryControllerTest extends BaseControllerTest {
                 .content(objectMapper.writeValueAsString(heroStory)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message", is("content must not be blank")))
-                .andExpect(jsonPath("$.error_code", is(ErrorCode.INVALIDATE_PARAMS.getValue())));
+                .andExpect(jsonPath("$.error_code", is(ErrorCode.USER_INPUT_ERROR.getValue())));
     }
 
     @Test
     void should_get_hero_story_by_id() throws Exception {
-        mockMvc.perform(get("/hero-story/open/" + this.mockHeroStory.getId())
+        mockMvc.perform(get("/hero-story/" + this.mockHeroStory.getId())
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.title", is("Title")))
@@ -103,13 +103,13 @@ public class HeroStoryControllerTest extends BaseControllerTest {
 
     @Test
     void should_get_hero_story_pageable() throws Exception {
-        mockMvc.perform(get("/hero-story/open")
+        mockMvc.perform(get("/hero-story")
                 .contentType(MediaType.APPLICATION_JSON)
                 .param("page", "7")
                 .param("size", "5"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.number", is(7)))
-                .andExpect(jsonPath("$.totalPages", is(4)))
-                .andExpect(jsonPath("$.totalElements", is(19)));
+                .andExpect(jsonPath("$.totalPages", is(5)))
+                .andExpect(jsonPath("$.totalElements", is(21)));
     }
 }

@@ -18,8 +18,10 @@ public class HeroStoryDetailDTO {
     private Long id;
 
     @Length(min = 1, max = 200, message = "title's length must between 1 and 200 characters")
+    @NotBlank(message = "title must not be blank")
     private String title;
 
+    @NotBlank(message = "author must not be blank")
     private String author;
 
     @NotBlank(message = "content must not be blank")
