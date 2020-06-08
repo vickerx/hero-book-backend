@@ -3,6 +3,8 @@ package com.thoughtworks.herobook.common.exception;
 import java.util.Arrays;
 
 public enum ErrorCode {
+    UPLOAD_IMAGE_ERROR("upload_image_error"),
+    DOWNLOAD_IMAGE_ERROR("download_image_error"),
     USER_INPUT_ERROR("user_input_error"),
     RESOURCE_NOT_FOUND("resource_not_found"),
     HERO_BOOK_INTERNAL_ERROR("hero_book_internal_error"),
