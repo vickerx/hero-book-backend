@@ -2,19 +2,12 @@ package com.thoughtworks.herobook.gateway.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.client.WireMock;
-import com.netflix.loadbalancer.Server;
-import com.netflix.loadbalancer.ServerList;
 import com.thoughtworks.herobook.auth.dto.UserResponse;
+import com.thoughtworks.herobook.gateway.AbstractWireMockTest;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
-import org.springframework.cloud.netflix.ribbon.StaticServerList;
-import org.springframework.context.annotation.Bean;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -23,26 +16,14 @@ import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 
-@SpringBootTest
-@ActiveProfiles("test")
 @AutoConfigureMockMvc
-@AutoConfigureWireMock(port = 10001)
-public class LoginTest {
+public class LoginTest extends AbstractWireMockTest {
 
     @Autowired
     private MockMvc mvc;
 
     @Autowired
     private ObjectMapper objectMapper;
-
-    @TestConfiguration
-    static class TestConfigurations {
-        @Bean
-        public ServerList<Server> ribbonServerList() {
-            return new StaticServerList<>(new Server("localhost", 10001));
-        }
-
-    }
 
     @Test
     public void should_login_successfully_when_login_given_correct_email_and_password() throws Exception {

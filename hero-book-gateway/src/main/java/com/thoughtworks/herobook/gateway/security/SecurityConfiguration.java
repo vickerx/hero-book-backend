@@ -42,6 +42,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                     response.setContentType("application/json");
                     response.getWriter().write("{\"code\":1,\"msg\":\"email or password error.\"}");
                     response.setStatus(HttpStatus.SC_OK);
+                })).and().logout()
+                .logoutSuccessHandler(((request, response, authentication) -> {
+                    response.setContentType("application/json");
+                    response.getWriter().write("{\"code\":0,\"msg\":\"success\"}");
+                    response.setStatus(HttpStatus.SC_OK);
                 }));
     }
 
