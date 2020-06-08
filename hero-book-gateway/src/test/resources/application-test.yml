@@ -3,3 +3,8 @@ spring:
     exclude:
       - org.springframework.cloud.netflix.eureka.EurekaClientAutoConfiguration
       - org.springframework.cloud.netflix.eureka.EurekaDiscoveryClientConfiguration
+zuul:
+  routes:
+    testservice:
+      path: /testservice/**
+      serviceId: testservice

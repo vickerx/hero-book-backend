@@ -2,6 +2,8 @@ package com.thoughtworks.herobook.gateway.zuul;
 
 import com.netflix.zuul.context.RequestContext;
 import com.netflix.zuul.exception.ZuulException;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -12,6 +14,13 @@ import org.springframework.security.core.userdetails.User;
 import java.util.List;
 
 public class GatewayFilterUnitTest {
+
+    @BeforeEach
+    @AfterEach
+    public void setUpAndTearDown() {
+        //不清理会干扰其他测试
+        RequestContext.testSetCurrentContext(null);
+    }
 
     @Test
     public void should_add_username_to_zuul_header_given_user_is_authenticated() throws ZuulException {
