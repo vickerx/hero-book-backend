@@ -4,13 +4,14 @@ import com.thoughtworks.herobook.auth.dto.UserDTO;
 import com.thoughtworks.herobook.auth.entity.ActivationCode;
 import com.thoughtworks.herobook.auth.entity.User;
 import com.thoughtworks.herobook.auth.exception.ExpiredException;
-import com.thoughtworks.herobook.auth.exception.UserHasBeenActivatedException;
+import com.thoughtworks.herobook.auth.exception.InvalidEmailException;
 import com.thoughtworks.herobook.auth.exception.NotFoundException;
 import com.thoughtworks.herobook.auth.exception.NotUniqueException;
+import com.thoughtworks.herobook.auth.exception.UserHasBeenActivatedException;
 import com.thoughtworks.herobook.auth.repository.ActivationCodeRepository;
-import com.thoughtworks.herobook.auth.exception.InvalidEmailException;
 import com.thoughtworks.herobook.auth.repository.UserRepository;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -19,9 +20,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.amqp.core.AmqpTemplate;
-import org.springframework.util.DigestUtils;
+import org.springframework.security.crypto.password.DelegatingPasswordEncoder;
+import org.springframework.security.crypto.password.MessageDigestPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -49,6 +53,17 @@ public class UserServiceTest {
     @Captor
     private ArgumentCaptor<User> userArgumentCaptor;
 
+    private static PasswordEncoder passwordEncoder;
+
+    @BeforeAll
+    @Deprecated
+    public static void setUp() {
+        String encoderId = "MD5";
+        HashMap<String, PasswordEncoder> idToPasswordEncoder = new HashMap<>();
+        idToPasswordEncoder.put(encoderId, new MessageDigestPasswordEncoder(encoderId));
+        passwordEncoder = new DelegatingPasswordEncoder(encoderId, idToPasswordEncoder);
+    }
+
     @Test
     void should_throw_exception_when_user_register_given_email_has_been_registered() {
         String email = "123@163.com";
@@ -71,7 +86,7 @@ public class UserServiceTest {
         verify(userRepository).save(userArgumentCaptor.capture());
         User captorValue = userArgumentCaptor.getValue();
         assertEquals(username, captorValue.getUsername());
-        assertEquals(DigestUtils.md5DigestAsHex(password.getBytes()), captorValue.getPassword());
+        assertTrue(passwordEncoder.matches("123456", captorValue.getPassword()));
         assertEquals(email, captorValue.getEmail());
     }
 

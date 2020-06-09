@@ -4,19 +4,21 @@ import com.thoughtworks.herobook.auth.dto.UserDTO;
 import com.thoughtworks.herobook.auth.entity.ActivationCode;
 import com.thoughtworks.herobook.auth.entity.User;
 import com.thoughtworks.herobook.auth.exception.ExpiredException;
-import com.thoughtworks.herobook.auth.exception.UserHasBeenActivatedException;
+import com.thoughtworks.herobook.auth.exception.InvalidEmailException;
 import com.thoughtworks.herobook.auth.exception.NotFoundException;
 import com.thoughtworks.herobook.auth.exception.NotUniqueException;
+import com.thoughtworks.herobook.auth.exception.UserHasBeenActivatedException;
 import com.thoughtworks.herobook.auth.repository.ActivationCodeRepository;
-import com.thoughtworks.herobook.auth.exception.InvalidEmailException;
 import com.thoughtworks.herobook.auth.repository.UserRepository;
 import com.thoughtworks.herobook.common.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.DelegatingPasswordEncoder;
+import org.springframework.security.crypto.password.MessageDigestPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.DigestUtils;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -42,7 +44,7 @@ public class UserService {
         });
         User user = User.builder()
                 .username(userDTO.getUsername())
-                .password(DigestUtils.md5DigestAsHex(userDTO.getPassword().getBytes()))
+                .password(generateEncodedPassword(userDTO.getPassword()))
                 .email(userDTO.getEmail())
                 .isActivated(false)
                 .build();
@@ -57,6 +59,14 @@ public class UserService {
         activationCodeRepository.save(activationCode);
 
         sendRegistrationEmail(userDTO, code);
+    }
+
+    @SuppressWarnings("deprecation")
+    private String generateEncodedPassword(String password) {
+        String encoderId = "MD5";
+        HashMap<String, PasswordEncoder> idToPasswordEncoder = new HashMap<>();
+        idToPasswordEncoder.put(encoderId, new MessageDigestPasswordEncoder(encoderId));
+        return new DelegatingPasswordEncoder(encoderId, idToPasswordEncoder).encode(password);
     }
 
     private void sendRegistrationEmail(UserDTO userDTO, String code) {
