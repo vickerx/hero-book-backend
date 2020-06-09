@@ -2,6 +2,6 @@ spring:
   profiles:
     active: ${ACTIVE_PROFILE:local}
   application:
-    name: hero-book-auth
+    name: authservice
   flyway:
     locations: ["classpath:db/migration"]

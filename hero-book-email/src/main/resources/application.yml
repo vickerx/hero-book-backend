@@ -2,4 +2,4 @@ spring:
   profiles:
     active: ${ACTIVE_PROFILE:local}
   application:
-    name: hero-book-email
+    name: emailservice
