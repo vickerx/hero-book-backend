@@ -60,7 +60,7 @@ public class HeroStoryControllerTest extends BaseControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(heroStory)))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message", is("title's length must between 1 and 200 characters")))
+                .andExpect(jsonPath("$.message", is("title must not be blank")))
                 .andExpect(jsonPath("$.error_code", is(ErrorCode.USER_INPUT_ERROR.getValue())));
     }
 
@@ -75,7 +75,7 @@ public class HeroStoryControllerTest extends BaseControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(heroStory)))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message", is("title's length must between 1 and 200 characters")))
+                .andExpect(jsonPath("$.message", is("title's length must less than 200 characters")))
                 .andExpect(jsonPath("$.error_code", is(ErrorCode.USER_INPUT_ERROR.getValue())));
     }
 

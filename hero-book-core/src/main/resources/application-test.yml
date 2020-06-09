@@ -10,3 +10,5 @@ spring:
   flyway:
     table: core_flyway_schema_history
     baseline-on-migrate: true
+img:
+  location: /Users/zhong.he/Downloads/
