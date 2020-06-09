@@ -109,7 +109,7 @@ public class HeroStoryControllerTest extends BaseControllerTest {
                 .param("size", "5"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.number", is(7)))
-                .andExpect(jsonPath("$.totalPages", is(5)))
-                .andExpect(jsonPath("$.totalElements", is(21)));
+                .andExpect(jsonPath("$.totalPages", is(4)))
+                .andExpect(jsonPath("$.totalElements", is(19)));
     }
 }
