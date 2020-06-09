@@ -98,4 +98,12 @@ public class UserControllerTest extends BaseControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.password", Matchers.is("aaaaaaaa")))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.isActivated", Matchers.is(true)));
     }
+
+    @Test
+    void should_return_null_when_get_by_email() throws Exception {
+        var email = "123@163.com";
+        mockMvc.perform(get("/user/get-by-email").param("email", email))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().string(Matchers.emptyOrNullString()));
+    }
 }

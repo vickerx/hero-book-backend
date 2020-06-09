@@ -38,6 +38,9 @@ public class UserController implements UserApi {
     }
 
     public UserResponse of(User user) {
+        if (user == null) {
+            return null;
+        }
         return UserResponse.builder()
                 .id(user.getId())
                 .email(user.getEmail())
