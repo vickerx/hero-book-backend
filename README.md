@@ -25,6 +25,16 @@ create database `hero_book`
     ```sql
    create database hero_book;
     ```
+## Create user & grant privileges
+```text
+create user <user>@<user-host> identified by <password>;
+grant all privileges on <database.table> to <user>@<user-host>;
+```
+***sample***
+```mysql
+create user test@'%' identified by '123456';
+grant all privileges on hero_book_test.* to test@'%';
+```
 ## Install rabbitmq in docker
 ```shell script
   docker run -d --name rabbitmq \
