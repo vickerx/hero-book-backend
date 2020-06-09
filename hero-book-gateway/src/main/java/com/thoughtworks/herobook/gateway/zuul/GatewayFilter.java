@@ -3,6 +3,7 @@ package com.thoughtworks.herobook.gateway.zuul;
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
 import com.netflix.zuul.exception.ZuulException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -27,7 +28,7 @@ public class GatewayFilter extends ZuulFilter {
     @Override
     public Object run() throws ZuulException {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.isAuthenticated()) {
+        if (authentication != null && authentication.isAuthenticated() && authentication instanceof UsernamePasswordAuthenticationToken) {
             UserDetails userDetails = ((UserDetails) authentication.getPrincipal());
             RequestContext.getCurrentContext().addZuulRequestHeader("email", userDetails.getUsername());
         }

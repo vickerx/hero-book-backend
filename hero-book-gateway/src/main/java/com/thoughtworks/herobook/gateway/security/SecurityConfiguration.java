@@ -6,6 +6,7 @@ import org.apache.http.HttpStatus;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -31,7 +32,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
-                .authorizeRequests().antMatchers(HttpMethod.POST).authenticated().and()
+                .authorizeRequests().antMatchers(Constants.NOT_AUTHENTICATED_URLS).anonymous()
+                .antMatchers(HttpMethod.POST).authenticated().and()
                 .formLogin().usernameParameter("email")
                 .successHandler(((request, response, authentication) -> {
                     response.setContentType("application/json");
@@ -39,9 +41,15 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                     response.setStatus(HttpStatus.SC_OK);
                 }))
                 .failureHandler(((request, response, exception) -> {
-                    response.setContentType("application/json");
-                    response.getWriter().write("{\"code\":1,\"msg\":\"email or password error.\"}");
-                    response.setStatus(HttpStatus.SC_OK);
+                    if (exception instanceof DisabledException) {
+                        response.setContentType("application/json");
+                        response.getWriter().write("{\"code\":1,\"msg\":\"email has not been activated.\"}");
+                        response.setStatus(HttpStatus.SC_OK);
+                    } else {
+                        response.setContentType("application/json");
+                        response.getWriter().write("{\"code\":1,\"msg\":\"email or password error.\"}");
+                        response.setStatus(HttpStatus.SC_OK);
+                    }
                 })).and().logout()
                 .logoutSuccessHandler(((request, response, authentication) -> {
                     response.setContentType("application/json");

@@ -6,7 +6,3 @@ eureka:
       defaultZone: http://127.0.0.1:10086/eureka
   instance:
     prefer-ip-address: true
-zuul:
-  prefix: /api
-  routes:
-    hero-book-core: /hero/**
