@@ -10,7 +10,8 @@ public enum ErrorCode {
     HERO_BOOK_INTERNAL_ERROR("hero_book_internal_error"),
     NOT_UNIQUE_ERROR("not_unique_error"),
     CODE_HAS_EXPIRED("code_has_expired"),
-    ACCOUNT_HAS_BEEN_ACTIVATED("account_has_been_activated")
+    ACCOUNT_HAS_BEEN_ACTIVATED("account_has_been_activated"),
+    ACCOUNT_HAS_NOT_BEEN_ACTIVATED("account_has_not_been_activated")
     ;
 
     private String value;

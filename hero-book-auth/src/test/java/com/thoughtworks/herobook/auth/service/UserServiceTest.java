@@ -8,6 +8,7 @@ import com.thoughtworks.herobook.auth.exception.InvalidEmailException;
 import com.thoughtworks.herobook.auth.exception.NotFoundException;
 import com.thoughtworks.herobook.auth.exception.NotUniqueException;
 import com.thoughtworks.herobook.auth.exception.UserHasBeenActivatedException;
+import com.thoughtworks.herobook.auth.exception.UserNotActivatedException;
 import com.thoughtworks.herobook.auth.repository.ActivationCodeRepository;
 import com.thoughtworks.herobook.auth.repository.UserRepository;
 import org.junit.jupiter.api.Assertions;
@@ -65,10 +66,10 @@ public class UserServiceTest {
     }
 
     @Test
-    void should_throw_exception_when_user_register_given_email_has_been_registered() {
+    void should_throw_not_unique_exception_when_user_register_given_email_has_been_registered_and_activated() {
         String email = "123@163.com";
         UserDTO requestDTO = UserDTO.builder().username("Jack").password("123456").email(email).build();
-        when(userRepository.findByEmail(email)).thenReturn(Optional.of(User.builder().email(email).build()));
+        when(userRepository.findByEmail(email)).thenReturn(Optional.of(User.builder().isActivated(true).email(email).build()));
 
         assertThrows(NotUniqueException.class, () -> userService.userRegistration(requestDTO));
     }
@@ -211,5 +212,14 @@ public class UserServiceTest {
         verify(userRepository).save(userArgumentCaptor.capture());
         User captorValue = userArgumentCaptor.getValue();
         assertTrue(captorValue.getIsActivated());
+    }
+
+    @Test
+    void should_throw_exception_when_user_registration_given_user_has_not_activated() {
+        String email = "123@163.com";
+        UserDTO requestDTO = UserDTO.builder().username("Jack").password("123456").email(email).build();
+        when(userRepository.findByEmail(email)).thenReturn(Optional.of(User.builder().isActivated(false).email(email).build()));
+
+        assertThrows(UserNotActivatedException.class, () -> userService.userRegistration(requestDTO));
     }
 }

@@ -8,6 +8,7 @@ import com.thoughtworks.herobook.auth.exception.InvalidEmailException;
 import com.thoughtworks.herobook.auth.exception.NotFoundException;
 import com.thoughtworks.herobook.auth.exception.NotUniqueException;
 import com.thoughtworks.herobook.auth.exception.UserHasBeenActivatedException;
+import com.thoughtworks.herobook.auth.exception.UserNotActivatedException;
 import com.thoughtworks.herobook.auth.repository.ActivationCodeRepository;
 import com.thoughtworks.herobook.auth.repository.UserRepository;
 import com.thoughtworks.herobook.common.exception.ErrorCode;
@@ -40,6 +41,9 @@ public class UserService {
     @Transactional
     public void userRegistration(UserDTO userDTO) {
         userRepository.findByEmail(userDTO.getEmail()).ifPresent(user -> {
+            if (!user.getIsActivated()) {
+                throw new UserNotActivatedException(HttpStatus.BAD_REQUEST, ErrorCode.ACCOUNT_HAS_NOT_BEEN_ACTIVATED, "The email has not been activated");
+            }
             throw new NotUniqueException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_UNIQUE_ERROR, "The email has been registered");
         });
         User user = User.builder()
