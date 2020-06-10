@@ -126,4 +126,15 @@ public class UserControllerTest extends BaseControllerTest {
                 .param("email", email))
                 .andExpect(status().isOk());
     }
+
+    @Test
+    @DatabaseSetup("/dbunit/UserControllerTest/should_return_user_info_given_email_setup.xml")
+    @DatabaseTearDown("/dbunit/UserControllerTest/user_clear_all.xml")
+    void should_return_user_info_given_email() throws Exception {
+        var email = "123@163.com";
+        mockMvc.perform(get("/user/info").header("email", email))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.email", Matchers.is(email)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.username", Matchers.is("nick")));
+    }
 }
