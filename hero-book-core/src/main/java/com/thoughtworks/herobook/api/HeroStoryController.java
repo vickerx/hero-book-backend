@@ -50,12 +50,12 @@ public class HeroStoryController {
     }
 
     @PutMapping("/image")
-    @ResponseStatus(HttpStatus.OK)
-    public void uploadImage(@RequestParam("image") MultipartFile multipartFile) {
+    public ResponseEntity<String> uploadImage(@RequestParam("image") MultipartFile multipartFile) {
         if (multipartFile.isEmpty() || StringUtils.isBlank(multipartFile.getOriginalFilename())) {
             throw new UploadImageException("image is empty");
         }
-        heroStoryService.uploadImage(multipartFile);
+        String uuid = heroStoryService.uploadImage(multipartFile);
+        return ResponseEntity.status(HttpStatus.OK).body(uuid);
     }
 
     @GetMapping("/image/{uuid}")

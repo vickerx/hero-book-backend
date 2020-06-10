@@ -51,13 +51,14 @@ public class HeroStoryService {
         heroStoryRepository.save(HeroStoryMapper.HERO_STORY_MAPPER.detailDTOtoEntity(detailDTO));
     }
 
-    public void uploadImage(MultipartFile multipartFile) {
+    public String uploadImage(MultipartFile multipartFile) {
         String contentType = multipartFile.getContentType();
         String fileName = multipartFile.getOriginalFilename();
         log.info("upload image:name={},type={}", fileName, contentType);
         String uuid = UUID.randomUUID().toString();
         try {
             saveImage(multipartFile, uuid);
+            return uuid;
         } catch (IOException e) {
             throw new UploadImageException("save image error: " + e.getMessage());
         }
