@@ -222,4 +222,35 @@ public class UserServiceTest {
 
         assertThrows(UserNotActivatedException.class, () -> userService.userRegistration(requestDTO));
     }
+
+    @Test
+    void should_throw_exception_when_resend_registration_email_given_user_has_not_been_registered() {
+        String email = "123@163.com";
+        when(userRepository.findByEmail(email)).thenReturn(Optional.empty());
+
+        assertThrows(ResourceNotFoundException.class, () -> userService.resendRegistrationEmail(email));
+    }
+
+    @Test
+    void should_throw_exception_when_resend_registration_email_given_user_has_activated() {
+        String email = "123@163.com";
+        when(userRepository.findByEmail(email)).thenReturn(Optional.of(User.builder().isActivated(true).email(email).build()));
+
+        assertThrows(UserHasBeenActivatedException.class, () -> userService.resendRegistrationEmail(email));
+    }
+
+    @Test
+    void should_update_activation_code_when_resend_registration_email() {
+        String email = "123@163.com";
+        User user = User.builder().isActivated(false).email(email).build();
+        ActivationCode activationCode = ActivationCode.builder()
+                .user(user)
+                .build();
+        user.setActivationCode(activationCode);
+        when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
+
+        userService.resendRegistrationEmail(email);
+
+        verify(activationCodeRepository).save(any(ActivationCode.class));
+    }
 }

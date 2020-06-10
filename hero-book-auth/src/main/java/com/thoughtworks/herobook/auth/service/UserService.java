@@ -27,7 +27,7 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class UserService {
-    public static final String USER_ACTIVE_URL_PREFIX = "http://localhost:8080/#/signup-active/";
+    public static final String USER_ACTIVATION_URL_PREFIX = "http://localhost:8080/#/signup-active/";
     public static final String EMAIL_EXCHANGE_NAME = "email";
     public static final String USER_REGISTRATION_ROUTING_KEY = "user.registration";
     public static final int ACTIVATION_CODE_EXPIRED_DAYS = 1;
@@ -75,7 +75,7 @@ public class UserService {
         Map<String, String> map = new HashMap<>();
         map.put("username", userDTO.getUsername());
         map.put("emailAddress", userDTO.getEmail());
-        map.put("activationLink", USER_ACTIVE_URL_PREFIX + code);
+        map.put("activationLink", USER_ACTIVATION_URL_PREFIX + code);
         amqpTemplate.convertAndSend(EMAIL_EXCHANGE_NAME, USER_REGISTRATION_ROUTING_KEY, map);
     }
 
@@ -112,5 +112,24 @@ public class UserService {
         if (activationCode.getExpiredTime().isBefore(LocalDateTime.now())) {
             throw new ExpiredException("The activation code is expired");
         }
+    }
+
+    @Transactional
+    public void resendRegistrationEmail(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("The account has not been registered"));
+        if (user.getIsActivated()) {
+            throw new UserHasBeenActivatedException("The account has been activated, please login");
+        }
+
+        String code = UUID.randomUUID().toString().replaceAll("-", "");
+        LocalDateTime expiredTime = LocalDateTime.now().plusDays(ACTIVATION_CODE_EXPIRED_DAYS);
+        ActivationCode activationCode = user.getActivationCode();
+        activationCode.setActivationCode(code);
+        activationCode.setExpiredTime(expiredTime);
+        activationCodeRepository.save(activationCode);
+
+        UserDTO userDTO = UserDTO.builder().email(email).username(user.getUsername()).build();
+        sendRegistrationEmail(userDTO, code);
     }
 }

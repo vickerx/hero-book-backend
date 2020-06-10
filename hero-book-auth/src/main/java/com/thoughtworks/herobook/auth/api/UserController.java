@@ -37,6 +37,12 @@ public class UserController implements UserApi {
         return of(userService.getByEmail(email));
     }
 
+    @GetMapping("/resend-registration-email")
+    public ResponseEntity<Void> resendRegistrationEmail(@RequestParam("email") String email) {
+        userService.resendRegistrationEmail(email);
+        return ResponseEntity.ok(null);
+    }
+
     public UserResponse of(User user) {
         if (user == null) {
             return null;

@@ -106,4 +106,24 @@ public class UserControllerTest extends BaseControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().string(Matchers.emptyOrNullString()));
     }
+
+    @Test
+    void should_resend_activation_link_given_user_has_not_activated() throws Exception {
+        String email = "123@163.com";
+        User user = User.builder()
+                .username("Jack")
+                .email(email)
+                .password("123456")
+                .isActivated(false)
+                .build();
+        ActivationCode activationCode = ActivationCode.builder()
+                .user(user)
+                .build();
+        user.setActivationCode(activationCode);
+        activationCodeRepository.save(activationCode);
+
+        mockMvc.perform(get("/user/resend-registration-email")
+                .param("email", email))
+                .andExpect(status().isOk());
+    }
 }
