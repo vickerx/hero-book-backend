@@ -5,12 +5,12 @@ import com.thoughtworks.herobook.auth.entity.ActivationCode;
 import com.thoughtworks.herobook.auth.entity.User;
 import com.thoughtworks.herobook.auth.exception.ExpiredException;
 import com.thoughtworks.herobook.auth.exception.InvalidEmailException;
-import com.thoughtworks.herobook.auth.exception.NotFoundException;
 import com.thoughtworks.herobook.auth.exception.NotUniqueException;
 import com.thoughtworks.herobook.auth.exception.UserHasBeenActivatedException;
 import com.thoughtworks.herobook.auth.exception.UserNotActivatedException;
 import com.thoughtworks.herobook.auth.repository.ActivationCodeRepository;
 import com.thoughtworks.herobook.auth.repository.UserRepository;
+import com.thoughtworks.herobook.common.exception.ResourceNotFoundException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -165,7 +165,7 @@ public class UserServiceTest {
         String code = "zxdzxcvcxzv";
         when(activationCodeRepository.findByActivationCode(code)).thenReturn(Optional.empty());
 
-        assertThrows(NotFoundException.class, () -> userService.activateAccount(code));
+        assertThrows(ResourceNotFoundException.class, () -> userService.activateAccount(code));
     }
 
     @Test

@@ -5,16 +5,14 @@ import com.thoughtworks.herobook.auth.entity.ActivationCode;
 import com.thoughtworks.herobook.auth.entity.User;
 import com.thoughtworks.herobook.auth.exception.ExpiredException;
 import com.thoughtworks.herobook.auth.exception.InvalidEmailException;
-import com.thoughtworks.herobook.auth.exception.NotFoundException;
 import com.thoughtworks.herobook.auth.exception.NotUniqueException;
 import com.thoughtworks.herobook.auth.exception.UserHasBeenActivatedException;
 import com.thoughtworks.herobook.auth.exception.UserNotActivatedException;
 import com.thoughtworks.herobook.auth.repository.ActivationCodeRepository;
 import com.thoughtworks.herobook.auth.repository.UserRepository;
-import com.thoughtworks.herobook.common.exception.ErrorCode;
+import com.thoughtworks.herobook.common.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.core.AmqpTemplate;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.DelegatingPasswordEncoder;
 import org.springframework.security.crypto.password.MessageDigestPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -42,9 +40,9 @@ public class UserService {
     public void userRegistration(UserDTO userDTO) {
         userRepository.findByEmail(userDTO.getEmail()).ifPresent(user -> {
             if (!user.getIsActivated()) {
-                throw new UserNotActivatedException(HttpStatus.BAD_REQUEST, ErrorCode.ACCOUNT_HAS_NOT_BEEN_ACTIVATED, "The email has not been activated");
+                throw new UserNotActivatedException("The email has not been activated");
             }
-            throw new NotUniqueException(HttpStatus.BAD_REQUEST, ErrorCode.NOT_UNIQUE_ERROR, "The email has been registered");
+            throw new NotUniqueException("The email has been registered");
         });
         User user = User.builder()
                 .username(userDTO.getUsername())
@@ -99,7 +97,7 @@ public class UserService {
     public void activateAccount(String code) {
         ActivationCode activationCode = activationCodeRepository
                 .findByActivationCode(code)
-                .orElseThrow(() -> new NotFoundException(HttpStatus.NOT_FOUND, ErrorCode.RESOURCE_NOT_FOUND, "The activation code is not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("The activation code is not found"));
         validate(activationCode);
 
         User user = activationCode.getUser();
@@ -109,10 +107,10 @@ public class UserService {
 
     private void validate(ActivationCode activationCode) {
         if (activationCode.getUser().getIsActivated()) {
-            throw new UserHasBeenActivatedException(HttpStatus.BAD_REQUEST, ErrorCode.ACCOUNT_HAS_BEEN_ACTIVATED, "The account has been activated, please login");
+            throw new UserHasBeenActivatedException("The account has been activated, please login");
         }
         if (activationCode.getExpiredTime().isBefore(LocalDateTime.now())) {
-            throw new ExpiredException(HttpStatus.BAD_REQUEST, ErrorCode.CODE_HAS_EXPIRED, "The activation code is expired");
+            throw new ExpiredException("The activation code is expired");
         }
     }
 }

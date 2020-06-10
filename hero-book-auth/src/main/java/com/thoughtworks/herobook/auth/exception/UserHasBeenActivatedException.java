@@ -5,11 +5,7 @@ import com.thoughtworks.herobook.common.exception.ErrorCode;
 import org.springframework.http.HttpStatus;
 
 public class UserHasBeenActivatedException extends BasicException {
-    public UserHasBeenActivatedException() {
-        super();
-    }
-
-    public UserHasBeenActivatedException(HttpStatus httpStatus, ErrorCode errorCode, String message) {
-        super(httpStatus, errorCode, message);
+    public UserHasBeenActivatedException(String message) {
+        super(HttpStatus.BAD_REQUEST, ErrorCode.ACCOUNT_HAS_BEEN_ACTIVATED, message);
     }
 }

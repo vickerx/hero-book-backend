@@ -5,11 +5,7 @@ import com.thoughtworks.herobook.common.exception.ErrorCode;
 import org.springframework.http.HttpStatus;
 
 public class NotUniqueException extends BasicException {
-    public NotUniqueException() {
-        super();
-    }
-
-    public NotUniqueException(HttpStatus httpStatus, ErrorCode errorCode, String message) {
-        super(httpStatus, errorCode, message);
+    public NotUniqueException(String message) {
+        super(HttpStatus.BAD_REQUEST, ErrorCode.NOT_UNIQUE_ERROR, message);
     }
 }
