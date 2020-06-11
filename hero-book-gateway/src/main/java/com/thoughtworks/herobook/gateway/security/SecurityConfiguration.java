@@ -42,11 +42,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 }))
                 .failureHandler(((request, response, exception) -> {
                     if (exception instanceof DisabledException) {
-                        response.setContentType("application/json");
+                        response.setContentType("application/json;charset=utf8");
                         response.getWriter().write("{\"code\":2,\"msg\":\"账号未激活，请登录邮箱激活\"}");
                         response.setStatus(HttpStatus.SC_OK);
                     } else {
-                        response.setContentType("application/json");
+                        response.setContentType("application/json;charset=utf8");
                         response.getWriter().write("{\"code\":1,\"msg\":\"邮箱、密码错误或不存在\"}");
                         response.setStatus(HttpStatus.SC_OK);
                     }
