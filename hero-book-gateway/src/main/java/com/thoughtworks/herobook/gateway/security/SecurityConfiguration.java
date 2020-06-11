@@ -9,6 +9,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
@@ -20,6 +21,8 @@ import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
 import org.springframework.security.crypto.password.StandardPasswordEncoder;
 import org.springframework.security.crypto.scrypt.SCryptPasswordEncoder;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,37 +34,43 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable()
-                .authorizeRequests().antMatchers(Constants.NOT_AUTHENTICATED_URLS).anonymous()
+        http.csrf().disable().authorizeRequests()
+                .antMatchers(Constants.NOT_AUTHENTICATED_URLS).anonymous()
+                .antMatchers(Constants.AUTHENTICATED_URLS).authenticated()
                 .antMatchers(HttpMethod.POST).authenticated().and()
-                .formLogin().usernameParameter("email")
-                .successHandler(((request, response, authentication) -> {
-                    response.setContentType("application/json");
-                    response.getWriter().write("{\"code\":0,\"msg\":\"success\"}");
-                    response.setStatus(HttpStatus.SC_OK);
-                }))
+                .exceptionHandling()
+                .authenticationEntryPoint((request, response, authException) ->
+                        setResponse(response, HttpStatus.SC_UNAUTHORIZED, 3, "未授权，请登录"))
+                .and().formLogin()
+                .usernameParameter("email")
+                .successHandler(((request, response, authentication) ->
+                        setResponse(response, HttpStatus.SC_OK, 0, "success")))
                 .failureHandler(((request, response, exception) -> {
                     if (exception instanceof DisabledException) {
-                        response.setContentType("application/json;charset=utf8");
-                        response.getWriter().write("{\"code\":2,\"msg\":\"账号未激活，请登录邮箱激活\"}");
-                        response.setStatus(HttpStatus.SC_OK);
+                        setResponse(response, HttpStatus.SC_OK, 2, "账号未激活，请登录邮箱激活");
                     } else {
-                        response.setContentType("application/json;charset=utf8");
-                        response.getWriter().write("{\"code\":1,\"msg\":\"邮箱、密码错误或不存在\"}");
-                        response.setStatus(HttpStatus.SC_OK);
+                        setResponse(response, HttpStatus.SC_OK, 1, "邮箱、密码错误或不存在");
                     }
                 })).and().logout()
-                .logoutSuccessHandler(((request, response, authentication) -> {
-                    response.setContentType("application/json");
-                    response.getWriter().write("{\"code\":0,\"msg\":\"success\"}");
-                    response.setStatus(HttpStatus.SC_OK);
-                }));
+                .logoutSuccessHandler(((request, response, authentication) ->
+                        setResponse(response, HttpStatus.SC_OK, 0, "success")));
+    }
+
+    private void setResponse(HttpServletResponse response, int httpStatus, int code, String msg) throws IOException {
+        response.setContentType("application/json;charset=utf8");
+        response.getWriter().write("{\"code\":" + code + ",\"msg\":\"" + msg + "\"}");
+        response.setStatus(httpStatus);
     }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService()).passwordEncoder(passwordEncoder());
         super.configure(auth);
+    }
+
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        super.configure(web);
     }
 
     @Bean
