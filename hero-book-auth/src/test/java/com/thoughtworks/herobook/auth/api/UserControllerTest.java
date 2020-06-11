@@ -117,6 +117,8 @@ public class UserControllerTest extends BaseControllerTest {
                 .isActivated(false)
                 .build();
         ActivationCode activationCode = ActivationCode.builder()
+                .expiredTime(LocalDateTime.now())
+                .activationCode("sdasfdszxc")
                 .user(user)
                 .build();
         user.setActivationCode(activationCode);
