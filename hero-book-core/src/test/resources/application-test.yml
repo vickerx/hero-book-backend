@@ -10,5 +10,9 @@ spring:
   flyway:
     table: core_flyway_schema_history
     baseline-on-migrate: true
+  autoconfigure:
+    exclude:
+      - org.springframework.cloud.netflix.eureka.EurekaClientAutoConfiguration
+      - org.springframework.cloud.netflix.eureka.EurekaDiscoveryClientConfiguration
 img:
   location: /Users/zhong.he/Downloads/
