@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+    <user id="1" username="nick1" email="1231@163.com" password="aaaaaaaa1" is_activated="true"/>
+    <user id="2" username="nick2" email="1232@163.com" password="aaaaaaaa2" is_activated="true"/>
+    <user id="3" username="nick3" email="1233@163.com" password="aaaaaaaa3" is_activated="true"/>
+    <user id="4" username="nick4" email="1234@163.com" password="aaaaaaaa4" is_activated="true"/>
+</dataset>

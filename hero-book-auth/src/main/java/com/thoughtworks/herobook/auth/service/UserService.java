@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -82,6 +83,11 @@ public class UserService {
     public User getByEmail(String email) {
         checkEmail(email);
         return userRepository.findByEmail(email).orElse(null);
+    }
+
+    public List<User> getListByEmails(List<String> emails) {
+        emails.forEach(this::checkEmail);
+        return userRepository.findAllByEmailIn(emails);
     }
 
     private void checkEmail(String email) {

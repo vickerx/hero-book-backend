@@ -16,6 +16,8 @@ import org.springframework.test.context.support.DirtiesContextTestExecutionListe
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -97,6 +99,29 @@ public class UserControllerTest extends BaseControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.username", Matchers.is("nick")))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.password", Matchers.is("aaaaaaaa")))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.isActivated", Matchers.is(true)));
+    }
+
+    @Test
+    @DatabaseSetup("/dbunit/UserControllerTest/should_return_user_list_when_get_by_email_list_setup.xml")
+    @DatabaseTearDown("/dbunit/UserControllerTest/user_clear_all.xml")
+    void should_return_user_list_when_get_by_email_list() throws Exception {
+        String email1 = "1231@163.com";
+        String email2 = "1232@163.com";
+        String email3 = "aaa@163.com";
+        mockMvc.perform(get("/user/get-list-by-emails")
+                .param("emails", email1)
+                .param("emails", email2)
+                .param("emails", email3))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$", Matchers.hasSize(2)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].email", Matchers.is(email1)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].username", Matchers.is("nick1")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].password", Matchers.is("aaaaaaaa1")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].isActivated", Matchers.is(true)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].email", Matchers.is(email2)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].username", Matchers.is("nick2")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].password", Matchers.is("aaaaaaaa2")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].isActivated", Matchers.is(true)));
     }
 
     @Test

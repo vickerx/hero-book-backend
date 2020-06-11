@@ -7,14 +7,11 @@ import com.thoughtworks.herobook.auth.entity.User;
 import com.thoughtworks.herobook.auth.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -37,6 +34,12 @@ public class UserController implements UserApi {
     @GetMapping("/get-by-email")
     public UserResponse getByEmail(@RequestParam("email") String email) {
         return of(userService.getByEmail(email));
+    }
+
+    @GetMapping("/get-list-by-emails")
+    public List<UserResponse> getUserByEmails(@RequestParam("emails") List<String> emails) {
+        List<User> users = userService.getListByEmails(emails);
+        return users.stream().map(this::of).collect(Collectors.toList());
     }
 
     @GetMapping("/resend-registration-email")
