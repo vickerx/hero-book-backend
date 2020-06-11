@@ -23,7 +23,7 @@ public class HeroStory {
 
     private String title;
 
-    private String author;
+    private String email;
 
     @Lob
     private String content;

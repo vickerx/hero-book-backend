@@ -1,8 +1,11 @@
 package com.thoughtworks.herobook.api.hero;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.thoughtworks.herobook.api.common.BaseControllerTest;
+import com.github.tomakehurst.wiremock.client.WireMock;
+import com.thoughtworks.herobook.api.common.AbstractWireMockTest;
 import com.thoughtworks.herobook.api.mock.HeroStoryMockData;
+import com.thoughtworks.herobook.auth.dto.UserResponse;
 import com.thoughtworks.herobook.common.exception.ErrorCode;
 import com.thoughtworks.herobook.entity.HeroStory;
 import com.thoughtworks.herobook.repository.HeroStoryRepository;
@@ -12,8 +15,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 
+import java.util.Arrays;
 import java.util.List;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -21,7 +27,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class HeroStoryControllerTest extends BaseControllerTest {
+public class HeroStoryControllerTest extends AbstractWireMockTest {
     private static ObjectMapper objectMapper;
 
     @Autowired
@@ -29,8 +35,14 @@ public class HeroStoryControllerTest extends BaseControllerTest {
     private HeroStory mockHeroStory;
 
     @BeforeAll
-    public static void setUp() {
+    public static void setUp() throws JsonProcessingException {
         objectMapper = new ObjectMapper();
+        var user = UserResponse.builder().email("email@email.com").username("Author").id(1L).isActivated(true).password("{MD5}{tyl4WmSKtePdnoq1m5eWo+E2NBeW0srEsmAbNo53y4g=}62b9ef3227a44f7a1a9297b65c0d33d4").build();
+        stubFor(WireMock.get(urlPathEqualTo("/user/get-by-email"))
+                .willReturn(WireMock.aResponse().withBody(objectMapper.writeValueAsString(user)).withHeader("content-type", "application/json")));
+        stubFor(WireMock.get(urlPathEqualTo("/user/get-list-by-emails"))
+                .willReturn(WireMock.aResponse().withBody(objectMapper.writeValueAsString(Arrays.asList(user))).withHeader("content-type", "application/json")));
+
     }
 
     @BeforeEach
@@ -48,6 +60,7 @@ public class HeroStoryControllerTest extends BaseControllerTest {
         HeroStory heroStory = HeroStoryMockData.mock();
         mockMvc.perform(post("/hero-story")
                 .contentType(MediaType.APPLICATION_JSON)
+                .header("email", "email@email.com")
                 .content(objectMapper.writeValueAsString(heroStory)))
                 .andExpect(status().isCreated());
     }

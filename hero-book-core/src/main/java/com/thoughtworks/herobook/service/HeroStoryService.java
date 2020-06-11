@@ -1,5 +1,7 @@
 package com.thoughtworks.herobook.service;
 
+import com.thoughtworks.herobook.auth.dto.UserResponse;
+import com.thoughtworks.herobook.client.UserApiClient;
 import com.thoughtworks.herobook.common.exception.ResourceNotFoundException;
 import com.thoughtworks.herobook.dto.HeroStoryDTO;
 import com.thoughtworks.herobook.dto.HeroStoryDetailDTO;
@@ -23,7 +25,12 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
@@ -33,17 +40,23 @@ public class HeroStoryService {
     @Value("${img.location}")
     private String location;
 
+    private final UserApiClient userApiClient;
+
     private final HeroStoryRepository heroStoryRepository;
 
     public HeroStoryDetailDTO getHeroStoryDetailById(Long id) {
         HeroStory heroStory = heroStoryRepository.findById(id).orElseThrow(()
                 -> new ResourceNotFoundException("Can not find Hero Story by id :" + id));
-        return HeroStoryMapper.HERO_STORY_MAPPER.toDetailDTO(heroStory);
+
+        Map<String, UserResponse> userMap = getUserMap(Collections.singletonList(heroStory.getEmail()));
+        return HeroStoryMapper.HERO_STORY_MAPPER.toDetailDTO(heroStory, userMap);
     }
 
     public Page<HeroStoryDTO> getHeroStoriesByPage(Pageable pageable) {
-        return heroStoryRepository.findAllByOrderByUpdatedTimeDesc(pageable)
-                .map(HeroStoryMapper.HERO_STORY_MAPPER::toDTO);
+        Page<HeroStory> page = heroStoryRepository.findAllByOrderByUpdatedTimeDesc(pageable);
+        List<String> emails = page.stream().map(HeroStory::getEmail).collect(Collectors.toList());
+        Map<String, UserResponse> userMap = getUserMap(emails);
+        return page.map(heroStory -> HeroStoryMapper.HERO_STORY_MAPPER.toDTO(heroStory, userMap));
     }
 
     @Transactional
@@ -78,6 +91,11 @@ public class HeroStoryService {
         byte[] bytes = multipartFile.getBytes();
         Path path = Paths.get(location, uuid);
         Files.write(path, bytes);
+    }
+
+    private Map<String, UserResponse> getUserMap(List<String> emails) {
+        List<UserResponse> users = userApiClient.getUserByEmails(emails);
+        return users.stream().collect(Collectors.toMap(UserResponse::getEmail, Function.identity()));
     }
 
 }

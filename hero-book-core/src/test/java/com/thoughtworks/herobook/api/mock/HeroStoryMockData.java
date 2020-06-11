@@ -11,7 +11,7 @@ public class HeroStoryMockData {
         for (int i = 1; i <= 18; i++) {
             HeroStory heroStory = HeroStory.builder()
                     .title("Title " + i)
-                    .author("Author " + i)
+                    .email("email@email.com " + i)
                     .content("Content Content Content Content Content Content Content Content Content Content " +
                             "Content Content Content Content Content Content Content Content Content Content " +
                             "Content Content Content Content Content Content Content Content Content Content " +
@@ -74,7 +74,7 @@ public class HeroStoryMockData {
     public static HeroStory mock() {
         return HeroStory.builder()
                 .title("Title")
-                .author("Author")
+                .email("email@email.com")
                 .content("Content")
                 .build();
     }

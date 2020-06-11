@@ -20,8 +20,9 @@ public class HeroStoryDetailDTO {
     @NotBlank(message = "title must not be blank")
     private String title;
 
-    @NotBlank(message = "author must not be blank")
     private String author;
+
+    private String email;
 
     @NotBlank(message = "content must not be blank")
     private String content;
