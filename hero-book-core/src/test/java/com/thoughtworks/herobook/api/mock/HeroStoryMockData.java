@@ -1,5 +1,6 @@
 package com.thoughtworks.herobook.api.mock;
 
+import com.thoughtworks.herobook.auth.dto.UserResponse;
 import com.thoughtworks.herobook.entity.HeroStory;
 
 import java.util.ArrayList;
@@ -77,5 +78,18 @@ public class HeroStoryMockData {
                 .email("email@email.com")
                 .content("Content")
                 .build();
+    }
+
+    public static List<UserResponse> mockUserList() {
+        List<UserResponse> userList = new ArrayList<>();
+        for (int i = 1; i <= 18; i++) {
+            UserResponse userResponse = UserResponse.builder()
+                    .email("email@email.com " + i)
+                    .username("Author " + i)
+                    .isActivated(true)
+                    .build();
+            userList.add(userResponse);
+        }
+        return userList;
     }
 }
