@@ -28,6 +28,9 @@ public class HeroStory {
     @Lob
     private String content;
 
+    @Lob
+    private String html;
+
     @CreationTimestamp
     private Date createdTime;
 

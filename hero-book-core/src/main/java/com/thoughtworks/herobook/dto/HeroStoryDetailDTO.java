@@ -27,6 +27,8 @@ public class HeroStoryDetailDTO {
     @NotBlank(message = "content must not be blank")
     private String content;
 
+    private String html;
+
     private Date createdTime;
 
     private Date updatedTime;

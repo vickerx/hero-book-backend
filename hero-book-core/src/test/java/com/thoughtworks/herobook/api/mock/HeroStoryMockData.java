@@ -13,6 +13,7 @@ public class HeroStoryMockData {
             HeroStory heroStory = HeroStory.builder()
                     .title("Title " + i)
                     .email("email@email.com " + i)
+                    .html("<html></html>")
                     .content("Content Content Content Content Content Content Content Content Content Content " +
                             "Content Content Content Content Content Content Content Content Content Content " +
                             "Content Content Content Content Content Content Content Content Content Content " +
@@ -76,6 +77,7 @@ public class HeroStoryMockData {
         return HeroStory.builder()
                 .title("Title")
                 .email("email@email.com")
+                .html("<html></html>")
                 .content("Content")
                 .build();
     }

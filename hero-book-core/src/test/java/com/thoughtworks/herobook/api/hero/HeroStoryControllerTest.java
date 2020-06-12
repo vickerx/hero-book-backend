@@ -111,6 +111,7 @@ public class HeroStoryControllerTest extends AbstractWireMockTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.title", is("Title")))
                 .andExpect(jsonPath("$.author", is("Author")))
+                .andExpect(jsonPath("$.html", is("<html></html>")))
                 .andExpect(jsonPath("$.content", is("Content")));
     }
 
