@@ -93,14 +93,14 @@ public class HeroStoryControllerTest extends AbstractWireMockTest {
     }
 
     @Test
-    void should_create_hero_story_failed_when_content_is_blank() throws Exception {
+    void should_create_hero_story_failed_when_abstract_content_is_blank() throws Exception {
         HeroStory heroStory = HeroStoryMockData.mock();
-        heroStory.setContent("");
+        heroStory.setAbstractContent("");
         mockMvc.perform(post("/hero-story")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(heroStory)))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message", is("content must not be blank")))
+                .andExpect(jsonPath("$.message", is("abstractContent must not be blank")))
                 .andExpect(jsonPath("$.error_code", is(ErrorCode.USER_INPUT_ERROR.getValue())));
     }
 
@@ -111,8 +111,8 @@ public class HeroStoryControllerTest extends AbstractWireMockTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.title", is("Title")))
                 .andExpect(jsonPath("$.author", is("Author")))
-                .andExpect(jsonPath("$.html", is("<html></html>")))
-                .andExpect(jsonPath("$.content", is("Content")));
+                .andExpect(jsonPath("$.content", is("<html></html>")))
+                .andExpect(jsonPath("$.abstractContent", is("Abstract Content")));
     }
 
     @Test

@@ -27,7 +27,9 @@ public class HeroStoryDetailDTO {
     @NotBlank(message = "content must not be blank")
     private String content;
 
-    private String html;
+    @Length(max = 300, message = "abstractContent's length must less than 300 characters")
+    @NotBlank(message = "abstractContent must not be blank")
+    private String abstractContent;
 
     private Date createdTime;
 

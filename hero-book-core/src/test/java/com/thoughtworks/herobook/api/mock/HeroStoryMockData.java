@@ -13,60 +13,8 @@ public class HeroStoryMockData {
             HeroStory heroStory = HeroStory.builder()
                     .title("Title " + i)
                     .email("email@email.com " + i)
-                    .html("<html></html>")
-                    .content("Content Content Content Content Content Content Content Content Content Content " +
-                            "Content Content Content Content Content Content Content Content Content Content " +
-                            "Content Content Content Content Content Content Content Content Content Content " +
-                            "Content Content Content Content Content Content Content Content Content Content " +
-                            "Content Content Content Content Content Content Content Content Content Content " +
-                            "Content Content Content Content Content Content Content Content Content Content " +
-                            "Content Content Content Content Content Content Content Content Content Content " +
-                            "Content Content Content Content Content Content Content Content Content Content " +
-                            "Content Content Content Content Content Content Content Content Content Content " +
-                            "Content Content Content Content Content Content Content Content Content Content " +
-                            "Content Content Content Content Content Content Content Content Content Content " +
-                            "Content Content Content Content Content Content Content Content Content Content " +
-                            "Content Content Content Content Content Content Content Content Content Content " +
-                            "Content Content Content Content Content Content Content Content Content Content " +
-                            "Content Content Content Content Content Content Content Content Content Content " +
-                            "Content Content Content Content Content Content Content Content Content Content " +
-                            "Content Content Content Content Content Content Content Content Content Content " +
-                            "Content Content Content Content Content Content Content Content Content Content " +
-                            "Content Content Content Content Content Content Content Content Content Content " +
-                            "Content Content Content Content Content Content Content Content Content Content " +
-                            "Content Content Content Content Content Content Content Content Content Content " +
-                            "Content Content Content Content Content Content Content Content Content Content " +
-                            "Content Content Content Content Content Content Content Content Content Content " +
-                            "Content Content Content Content Content Content Content Content Content Content " +
-                            "Content Content Content Content Content Content Content Content Content Content " +
-                            "Content Content Content Content Content Content Content Content Content Content " +
-                            "Content Content Content Content Content Content Content Content Content Content " +
-                            "Content Content Content Content Content Content Content Content Content Content " +
-                            "Content Content Content Content Content Content Content Content Content Content " +
-                            "Content Content Content Content Content Content Content Content Content Content " +
-                            "Content Content Content Content Content Content Content Content Content Content " +
-                            "Content Content Content Content Content Content Content Content Content Content " +
-                            "Content Content Content Content Content Content Content Content Content Content " +
-                            "Content Content Content Content Content Content Content Content Content Content " +
-                            "Content Content Content Content Content Content Content Content Content Content " +
-                            "Content Content Content Content Content Content Content Content Content Content " +
-                            "Content Content Content Content Content Content Content Content Content Content " +
-                            "Content Content Content Content Content Content Content Content Content Content " +
-                            "Content Content Content Content Content Content Content Content Content Content " +
-                            "Content Content Content Content Content Content Content Content Content Content " +
-                            "Content Content Content Content Content Content Content Content Content Content " +
-                            "Content Content Content Content Content Content Content Content Content Content " +
-                            "Content Content Content Content Content Content Content Content Content Content " +
-                            "Content Content Content Content Content Content Content Content Content Content " +
-                            "Content Content Content Content Content Content Content Content Content Content " +
-                            "Content Content Content Content Content Content Content Content Content Content " +
-                            "Content Content Content Content Content Content Content Content Content Content " +
-                            "Content Content Content Content Content Content Content Content Content Content " +
-                            "Content Content Content Content Content Content Content Content Content Content " +
-                            "Content Content Content Content Content Content Content Content Content Content " +
-                            "Content Content Content Content Content Content Content Content Content Content " +
-                            "Content Content Content Content Content Content Content Content Content Content " +
-                            "Content Content Content Content Content Content Content Content Content Content " + i)
+                    .content("<html></html>")
+                    .abstractContent("Abstract Content" + i)
                     .build();
             heroStories.add(heroStory);
         }
@@ -77,8 +25,8 @@ public class HeroStoryMockData {
         return HeroStory.builder()
                 .title("Title")
                 .email("email@email.com")
-                .html("<html></html>")
-                .content("Content")
+                .content("<html></html>")
+                .abstractContent("Abstract Content")
                 .build();
     }
 

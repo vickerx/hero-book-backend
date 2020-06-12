@@ -25,11 +25,10 @@ public class HeroStory {
 
     private String email;
 
-    @Lob
-    private String content;
+    private String abstractContent;
 
     @Lob
-    private String html;
+    private String content;
 
     @CreationTimestamp
     private Date createdTime;

@@ -18,7 +18,7 @@ public class HeroStoryDTO {
 
     private String author;
 
-    private String contentAbstract;
+    private String abstractContent;
 
     private Date createdTime;
 

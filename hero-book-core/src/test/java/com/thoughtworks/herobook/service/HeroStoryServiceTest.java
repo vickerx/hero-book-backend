@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -40,7 +39,7 @@ public class HeroStoryServiceTest {
         Page<HeroStoryDTO> response = heroStoryService.getHeroStoriesByPage(PageRequest.of(1, 5));
 
         response.forEach(heroStoryDTO ->
-                assertTrue(heroStoryDTO.getContentAbstract().length() <= 300));
+                assertTrue(heroStoryDTO.getAbstractContent().length() <= 300));
     }
 
 }
